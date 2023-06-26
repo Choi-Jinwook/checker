@@ -5,6 +5,7 @@ import {
 } from "firebase/auth";
 import { authService } from "@/components/firebase/firebase";
 import { useRouter } from "next/router";
+import styles from "../styles/index.module.css";
 
 export default function Auth() {
   const [login, setLogin] = useState(false);
@@ -28,14 +29,15 @@ export default function Auth() {
           email,
           password
         );
+        alert("회원가입에 성공했습니다.");
       } else {
         data = await signInWithEmailAndPassword(authService, email, password);
+        alert("로그인에 성공했습니다.");
       }
-      alert("회원가입 성공");
       router.push("/home");
     } catch (error) {
       if (error instanceof Error) {
-        setError(error.message);
+        setError("등록되지 않은 계정이거나 비밀번호가 틀렸습니다.");
       }
     }
   };
@@ -49,30 +51,32 @@ export default function Auth() {
   };
 
   return (
-    <>
-      <form onSubmit={onAuthSubmit}>
+    <div className={styles.container}>
+      <form className={styles.form} onSubmit={onAuthSubmit}>
         <input
           id="email"
+          className={styles.email}
           type="text"
-          placeholder="email"
+          placeholder="Email"
           onChange={onAuthChange}
         />
         <input
           id="password"
+          className={styles.password}
           type="password"
-          placeholder="password"
+          placeholder="Password"
           onChange={onAuthChange}
         />
         <input
-          id="authSubmit"
+          className={styles.authSubmit}
           type="submit"
           value={login ? "로그인" : "회원가입"}
         />
       </form>
-      <button onClick={handleLoginToggle}>
+      <text className={styles.convert} onClick={handleLoginToggle}>
         {login ? "회원가입으로 전환" : "로그인으로 전환"}
-      </button>
-      <span>{error}</span>
-    </>
+      </text>
+      <span className={styles.errorMsg}>{error}</span>
+    </div>
   );
 }
