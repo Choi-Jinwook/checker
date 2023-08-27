@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface SeeMine {
   seeMine: boolean;
   toggleSeeMine: () => void;
@@ -24,6 +26,14 @@ const MainHeader = ({ seeMine, toggleSeeMine }: SeeMine) => {
       >
         전체보기
       </button>
+      <button
+        className="refreshButton"
+        onClick={() => {
+          location.reload();
+        }}
+      >
+        <Image src="/reload.jpeg" alt="reload" width={30} height={30} />
+      </button>
       <style jsx>{`
         #navContainer {
           display: flex;
@@ -33,6 +43,10 @@ const MainHeader = ({ seeMine, toggleSeeMine }: SeeMine) => {
         }
         .navButton {
           flex-grow: 1;
+          background-color: white;
+          border: 1px solid white;
+        }
+        .refreshButton {
           background-color: white;
           border: 1px solid white;
         }

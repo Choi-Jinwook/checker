@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface MyComponentProps {
@@ -8,10 +9,18 @@ const Footer = ({ children }: MyComponentProps) => {
   return (
     <>
       <footer className="container">
-        <div className="footer">홈</div>
-        <div className="footer">목록</div>
-        <div className="footer">커뮤니티</div>
-        <div className="footer">프로필</div>
+        <Link legacyBehavior href="/home">
+          <a className="footer">홈</a>
+        </Link>
+        <Link legacyBehavior href="/list">
+          <a className="footer">목록</a>
+        </Link>
+        <Link legacyBehavior href="/community">
+          <a className="footer">커뮤니티</a>
+        </Link>
+        <Link legacyBehavior href="/profile">
+          <a className="footer">프로필</a>
+        </Link>
       </footer>
       <div>{children}</div>
       <style jsx>{`
@@ -25,6 +34,8 @@ const Footer = ({ children }: MyComponentProps) => {
         }
         .footer {
           width: 25%;
+          text-decoration: none;
+          color: black;
         }
       `}</style>
     </>

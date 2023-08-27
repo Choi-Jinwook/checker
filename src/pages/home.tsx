@@ -1,48 +1,45 @@
-import MainHeader from "@/components/Headers/MainHeader";
-import Footer from "@/components/Layout";
-import ListSearch from "@/components/Search/ListSearch";
-import Seo from "@/components/Seo";
-import { dbService } from "@/components/firebase/firebase";
-import KakaoMap from "@/components/kakaomap/KaKaoMap";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-} from "firebase/firestore";
 import { GetServerSideProps } from "next";
+import Main from "../components/Main";
+import { collection, getDocs, query } from "firebase/firestore";
+import { authService, dbService } from "@/components/firebase/firebase";
 import { useEffect, useState } from "react";
 
-export interface MarkerInfo {
-  lat: number;
-  lng: number;
-  addr: string;
-  storeName: string;
-  storeInfo: string;
-  creatorName?: string;
-  hide: boolean;
-  id: string;
-  uid: string;
+export interface UserObj {
+  email: string | null;
+  displayName: string | undefined | null;
+  uid: string | null;
+  updateProfile: any;
 }
 
-export default function Home({ data }: any) {
-  const [seeMine, setSeeMine] = useState<boolean>(false);
+const Home = ({ data }: any) => {
+  const [user, setUser] = useState<UserObj>();
 
-  const toggleSeeMine = () => {
-    setSeeMine((prev) => !prev);
-  };
+  useEffect(() => {
+    const handleUserObj = (user: UserObj) => {
+      setUser({
+        email: user.email,
+        displayName: user.displayName,
+        uid: user.uid,
+        updateProfile: () =>
+          user.updateProfile(user, { displayName: user.displayName }),
+      });
+    };
 
-  return (
-    <Footer>
-      <Seo title="Home" />
-      <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
-      <KakaoMap res={data} />
-      <ListSearch />
-    </Footer>
-  );
-}
+    authService.onAuthStateChanged((user: any) => {
+      if (user) {
+        if (user.displayName === null) {
+          const name = user.email.split("@")[0];
+          user.displayName = name;
+          handleUserObj(user);
+        } else {
+          handleUserObj(user);
+        }
+      }
+    });
+  }, []);
+
+  return <Main data={data} user={user} />;
+};
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const q = query(collection(dbService, "mystore"));
@@ -58,3 +55,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   };
 };
+
+export default Home;

@@ -1,22 +1,22 @@
-/* eslint-disable @next/next/no-before-interactive-script-outside-document */
-import Script from "next/script";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
-import ClickableMarker from "./ClickableMarker";
-import { MarkerInfo } from "@/pages/home";
-
-const KAKAO_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=7fe13a944b1292368361112f4eef767f&libraries=services,clusterer&autoload=false`;
+import StoreInfo from "./StoreInfo";
+import { UserObj } from "@/pages/home";
+import EventMarkerContainer from "./EventMarkerContainer";
 
 export interface Coords {
   lat: number;
   lng: number;
 }
 
-interface Marker {
-  res: any;
+export interface Marker {
+  data: any;
+  seeMine: boolean;
+  user: UserObj;
+  init: boolean;
 }
 
-const KakaoMap = ({ res }: Marker) => {
+const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
   const [myCoords, setMyCoords] = useState<Coords>({
     lat: 0,
     lng: 0,
@@ -26,6 +26,7 @@ const KakaoMap = ({ res }: Marker) => {
     lng: 0,
   });
   const [isMarkerInfoOpen, setIsMarkerInfoOpen] = useState(false);
+  const [add, setAdd] = useState(true);
 
   const toggleInfo = () => {
     // static, dynamic
@@ -48,6 +49,7 @@ const KakaoMap = ({ res }: Marker) => {
       },
       (error) => {
         console.warn("Fail to fetch current location", error);
+        alert("위치 정보 사용에 동의해주세요");
         setMyCoords({
           lat: 37,
           lng: 127,
@@ -58,40 +60,99 @@ const KakaoMap = ({ res }: Marker) => {
 
   return (
     <>
-      <Script src={KAKAO_SDK_URL} strategy="beforeInteractive" />
-      <Map
-        center={{ lat: myCoords.lat, lng: myCoords.lng }}
-        style={{ width: "100%", height: "45vh", marginBottom: "0.1rem" }}
-        onClick={(_t, mouseEvent) => {
-          setClickCoords({
-            lat: mouseEvent.latLng.getLat(),
-            lng: mouseEvent.latLng.getLng(),
-          });
-          setIsMarkerInfoOpen(false);
-        }}
-      >
-        <ClickableMarker
-          lat={clickCoords.lat}
-          lng={clickCoords.lng}
-          open={isMarkerInfoOpen}
-          toggleInfo={toggleInfo}
-        />
-        {/* {res.map((el: any) => {
-          const path = el._document.data.value.mapValue.fields;
-          console.log(clickCoords);
-          console.log(myCoords);
+      {init && (
+        <Map
+          id="kakaoMap"
+          center={{ lat: myCoords.lat, lng: myCoords.lng }}
+          style={{ width: "100%", height: "45vh", marginBottom: "0.1rem" }}
+          onClick={(_t, mouseEvent) => {
+            setClickCoords({
+              lat: mouseEvent.latLng.getLat(),
+              lng: mouseEvent.latLng.getLng(),
+            });
+            setIsMarkerInfoOpen(false);
+          }}
+        >
+          {/* seemine에 따른 저장된 마커 보이기 */}
+          {seeMine ? (
+            <>
+              {data.map((el: any) => {
+                const docPath = el._document.data.value.mapValue.fields;
+                return (
+                  docPath.uid.stringValue === user?.uid && (
+                    <EventMarkerContainer
+                      key={el._key.path.segments[6]}
+                      data={docPath}
+                    ></EventMarkerContainer>
+                  )
+                );
+              })}
+            </>
+          ) : (
+            <>
+              {data.map((el: any) => {
+                const docPath = el._document.data.value.mapValue.fields;
+                if (docPath.hide.booleanValue) return null;
+                return (
+                  <EventMarkerContainer
+                    key={el._key.path.segments[6]}
+                    data={docPath}
+                  ></EventMarkerContainer>
+                );
+              })}
+            </>
+          )}
+
+          {/* Current Map Marker */}
+          {clickCoords.lat !== 0 && clickCoords.lng !== 0 && (
+            <MapMarker
+              position={{ lat: clickCoords.lat, lng: clickCoords.lng }}
+              onClick={() => {
+                setIsMarkerInfoOpen((prev) => !prev);
+                setAdd(true);
+              }}
+            >
+              {isMarkerInfoOpen && (
+                <StoreInfo
+                  lat={clickCoords.lat}
+                  lng={clickCoords.lng}
+                  add={add}
+                  toggleInfo={toggleInfo}
+                />
+              )}
+            </MapMarker>
+          )}
+
+          {/* {data.map((el: any) => {
+          const docPath = el._document.data.value.mapValue.fields;
+          console.log(docPath);
 
           return (
-            <ClickableMarker
-              key={el._key.path.segments[6]}
-              lat={path.lat.stringValue}
-              lng={path.lng.stringValue}
-              open={isMarkerInfoOpen}
-              toggleInfo={toggleInfo}
-            />
+            <React.Fragment key={el._key.path.segments[6]}>
+              <MapMarker
+                position={{
+                  lat: docPath.lat.stringValue,
+                  lng: docPath.lng.stringValue,
+                }}
+                onClick={() => {
+                  setIsMarkerInfoOpen((prev) => !prev);
+                  setAdd(false);
+                }}
+              >
+                {isMarkerInfoOpen && (
+                  <StoreInfo
+                    lat={docPath.lat.stringValue}
+                    lng={docPath.lng.stringValue}
+                    add={add}
+                    toggleInfo={toggleInfo}
+                  />
+                )}
+              </MapMarker>
+            </React.Fragment>
           );
         })} */}
-      </Map>
+        </Map>
+      )}
     </>
   );
 };

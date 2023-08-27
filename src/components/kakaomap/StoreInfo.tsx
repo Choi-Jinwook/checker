@@ -1,21 +1,16 @@
-import { MapMarker } from "react-kakao-maps-sdk";
 import { Coords } from "./KaKaoMap";
 import Image from "next/image";
 import Link from "next/link";
 
 interface Move extends Coords {
-  open: boolean;
+  add: boolean;
   toggleInfo: () => void;
 }
 
-const ClickableMarker = ({ lat, lng, open, toggleInfo }: Move) => {
+const StoreInfo = ({ lat, lng, add, toggleInfo }: Move) => {
   return (
-    <MapMarker
-      position={{ lat: lat, lng: lng }}
-      clickable={true}
-      onClick={toggleInfo}
-    >
-      {open && (
+    <>
+      {add && (
         <div style={{ minWidth: "150px" }}>
           <Image
             alt="close"
@@ -42,8 +37,8 @@ const ClickableMarker = ({ lat, lng, open, toggleInfo }: Move) => {
           </Link>
         </div>
       )}
-    </MapMarker>
+    </>
   );
 };
 
-export default ClickableMarker;
+export default StoreInfo;

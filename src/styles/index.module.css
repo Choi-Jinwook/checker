@@ -1,62 +1,23 @@
 .container {
+  height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  width: 100vw;
+  gap: 1rem;
 }
 
-.form {
-  display: grid;
-  place-items: center;
-  grid-template-rows: repeat(2, 1fr);
-  grid-template-columns: repeat(3, 1fr);
-  margin-bottom: 1rem;
-}
-.form input:nth-child(1) {
-  grid-row-start: 1;
-  grid-row-end: 2;
-  grid-column-start: 1;
-  grid-column-end: 3;
-}
-.form input:nth-child(2) {
-  grid-row-start: 2;
-  grid-row-end: 3;
-  grid-column-start: 1;
-  grid-column-end: 3;
-}
-.form input:nth-child(3) {
-  grid-row-start: 1;
-  grid-row-end: 3;
-  grid-column-start: 3;
-  grid-column-end: 4;
+.title {
+  font-size: 2rem;
 }
 
-.email {
-  height: 1.5rem;
-  border: 1px solid black;
-  border-radius: 5%;
+.explanation {
+  font-size: 1rem;
 }
 
-.password {
-  height: 1.5rem;
-  border: 1px solid black;
-  border-radius: 5%;
-}
-
-.authSubmit {
-  height: 100%;
-  width: 4rem;
-  background-color: rgb(245, 245, 245);
-  border: 1px solid black;
-  border-radius: 5%;
-}
-
-.convert {
-  text-decoration: underline;
-}
-
-.errorMsg {
-  color: red;
+.button {
+  background-color: white;
+  border: none;
+  text-align: center;
+  font-size: 1rem;
 }

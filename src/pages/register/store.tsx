@@ -90,21 +90,24 @@ const RegStore = () => {
 
   return (
     <>
-      <Seo title="Register Place" />
+      <Seo title="Register" />
       <form onSubmit={onSubmit}>
-        <div>
+        <div className="category">스크롤형 카테고리(추후 업데이트 예정)</div>
+        <div className="storeNameContainer">
           <input
+            className="storeName"
             type="text"
             placeholder="장소 이름"
             onChange={onStoreNameChange}
             required
           />
         </div>
-        <div>
+        <div className="storeInfoContainer">
           <textarea
+            className="storeInfo"
             value={storeInfo}
             onChange={onStoreInfoChange}
-            placeholder="설명을 적어주세요."
+            placeholder="설명을 적어주세요"
             required
           />
         </div>
@@ -114,26 +117,101 @@ const RegStore = () => {
               return (
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <button>파일 선택</button>
+                  <button className="selectFile">파일 선택</button>
                 </div>
               );
             }}
           </Dropzone>
         </div>
-        <div>
-          <label htmlFor="hide">나만 보기</label>
+        <div className="labelContainer">
           <input
             id="hide"
             type="checkbox"
             checked={isHide}
             onChange={handleHide}
           />
+          <label htmlFor="hide">나만 보기</label>
         </div>
-        <div>
-          <input type="submit" value="등록" />
-          <input type="button" value="취소" onClick={handleCancel} />
+        <div className="buttonContainer">
+          <input className="submit Button" type="submit" value="등록" />
+          <input
+            className="cancle Button"
+            type="button"
+            value="취소"
+            onClick={handleCancel}
+          />
         </div>
       </form>
+      <style jsx>{`
+        form {
+          display: flex;
+          flex-direction: column;
+        }
+        .category {
+          display: flex;
+          align-items: center;
+          height: 2rem;
+          padding-left: 0.5rem;
+        }
+        .storeName {
+          width: 100vw;
+          height: 2rem;
+          border: none;
+          border-top: 1px solid black;
+          border-bottom: 1px solid black;
+          font-size: 1rem;
+          padding-left: 0.5rem;
+        }
+        .storeInfo {
+          width: 100vw;
+          height: 50vh;
+          border: none;
+          border-bottom: 1px solid black;
+          font-size: 1rem;
+          padding-top: 0.5rem;
+          padding-left: 0.5rem;
+          resize: none;
+        }
+        .selectFile {
+          background-color: white;
+          border: none;
+          text-decoration: underline;
+          margin-left: auto;
+          margin-right: 1rem;
+        }
+        #hide {
+          width: 1rem;
+          height: 1rem;
+        }
+        .labelContainer {
+          margin-left: auto;
+          margin-right: 1rem;
+          min-height: 3rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .submit {
+          margin-right: 0.5rem;
+          background-color: rgb(0, 120, 212);
+          color: white;
+          border: 1px solid #afafaf;
+          border-radius: 20%;
+          width: 3rem;
+          height: 2rem;
+        }
+        .cancle {
+          background-color: white;
+          border: 1px solid #afafaf;
+          border-radius: 20%;
+          width: 3rem;
+          height: 2rem;
+        }
+        .buttonContainer {
+          margin-left: auto;
+          margin-right: 1rem;
+        }
+      `}</style>
     </>
   );
 };
