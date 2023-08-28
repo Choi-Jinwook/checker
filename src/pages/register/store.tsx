@@ -67,6 +67,7 @@ const RegStore = () => {
           lng: router.query.lng,
           addr: address,
           hide: isHide,
+          likes: 0,
         };
         await addDoc(collection(dbService, "mystore"), storeObj);
       } catch (error) {
@@ -163,7 +164,7 @@ const RegStore = () => {
           padding-left: 0.5rem;
         }
         .storeInfo {
-          width: 100vw;
+          width: calc(100vw - 0.6rem);
           height: 50vh;
           border: none;
           border-bottom: 1px solid black;
@@ -171,6 +172,9 @@ const RegStore = () => {
           padding-top: 0.5rem;
           padding-left: 0.5rem;
           resize: none;
+        }
+        .storeInfo::-webkit-scrollbar {
+          display: none;
         }
         .selectFile {
           background-color: white;

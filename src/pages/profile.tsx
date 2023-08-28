@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import profile from "../../public/profile.png";
+import list from "../../public/list.png";
+import bookmark from "../../public/bookmark.png";
 
 export default function Profile() {
   const [user, setUser] = useState<any>();
@@ -40,6 +42,28 @@ export default function Profile() {
           <button className="logout" onClick={handleLogout}>
             로그아웃
           </button>
+        </div>
+        <div className="userListContainer">
+          <div className="myLikeList">
+            <Image
+              className="listImage"
+              src={list}
+              alt="list"
+              width={30}
+              height={30}
+            />
+            내 좋아요 목록
+          </div>
+          <div className="myBookmarkList">
+            <Image
+              className="bookmarkImage"
+              src={bookmark}
+              alt="bookmark"
+              width={30}
+              height={30}
+            />
+            내 북마크 목록
+          </div>
         </div>
         <style jsx>{`
           .container {
@@ -93,6 +117,31 @@ export default function Profile() {
             border-radius: 0.5rem;
             width: 4rem;
             height: 2rem;
+          }
+          .userListContainer {
+            margin-top: 1rem;
+            border: none;
+            border-top: 1px solid gray;
+            border-bottom: 1px solid gray;
+          }
+          .myLikeList {
+            display: flex;
+            width: 100vw;
+            height: 7vh;
+            align-items: center;
+            font-size: 1rem;
+            gap: 1rem;
+            padding-left: 1rem;
+            border-bottom: 1px solid gray;
+          }
+          .myBookmarkList {
+            display: flex;
+            width: 100vw;
+            height: 7vh;
+            align-items: center;
+            font-size: 1rem;
+            gap: 1rem;
+            padding-left: 1rem;
           }
         `}</style>
       </div>
