@@ -23,7 +23,9 @@ export default function Profile() {
   return (
     <Footer>
       <div className="container">
-        <div className="header">프로필</div>
+        <div className="headerContainer">
+          <div className="header">프로필</div>
+        </div>
         <div className="nicknameContainer">
           <div className="item profileImage">
             <Image src={profile} alt="profile" width={100} height={100} />
@@ -45,14 +47,18 @@ export default function Profile() {
             flex-direction: column;
             width: 100vw;
             height: 95vh;
-            align-items: center;
+          }
+          .headerContainer {
+            width: 100%;
+            height: 5vh;
           }
           .header {
+            display: flex;
+            align-items: center;
             width: 100%;
-            height: 2rem;
+            height: 100%;
             font-size: 1.5rem;
             border-bottom: 1px solid black;
-            padding-top: 0.25rem;
             padding-left: 1rem;
           }
           .nicknameContainer {

@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 import home from "../../public/home.png";
-import list from "../../public/list.png";
 import community from "../../public/community.png";
 import profile from "../../public/profile.png";
 
@@ -17,11 +16,6 @@ const Footer = ({ children }: MyComponentProps) => {
         <Link legacyBehavior href="/home">
           <a className="footer">
             <Image src={home} alt="home" width={28} height={28} />
-          </a>
-        </Link>
-        <Link legacyBehavior href="/list">
-          <a className="footer">
-            <Image src={list} alt="list" width={28} height={28} />
           </a>
         </Link>
         <Link legacyBehavior href="/community">
@@ -47,18 +41,17 @@ const Footer = ({ children }: MyComponentProps) => {
           width: 100%;
           height: 5vh;
           display: flex;
+          justify-content: space-around;
+          align-items: center;
+          text-align: center;
           position: fixed;
           bottom: 0px;
           left: 0px;
           background-color: white;
           border-top: 1px solid black;
-          text-align: center;
-          align-items: center;
         }
         .footer {
-          position: relative;
-          top: 0.3vh;
-          width: 25%;
+          width: 33%;
         }
       `}</style>
     </>
