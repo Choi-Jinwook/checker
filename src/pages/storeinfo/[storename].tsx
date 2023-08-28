@@ -1,4 +1,4 @@
-import Footer from "@/components/Layout";
+import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
 import { useRouter } from "next/router";
 

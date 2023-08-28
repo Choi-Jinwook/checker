@@ -15,73 +15,77 @@ const ListSearch = ({ data, seeMine, user }: Marker) => {
   };
 
   return (
-    <div id="searchBoxContainer">
-      <input
-        id="searchBox"
-        type="text"
-        placeholder="검색어를 입력해주세요(가게명, 설명, 주소(지번))"
-        onChange={handleSearchWordChange}
-      />
-      {search === ""
-        ? data.map((el: any) => {
-            const docPath = el._document.data.value.mapValue.fields;
-            if (docPath.hide.booleanValue === true) return null;
-            return (
-              <div
-                key={el._key.path.segments[6]}
-                className={`list ${docPath.storeName.stringValue}`}
-                onClick={(e) => {
-                  handleRouting((e.target as any).textContent);
-                }}
-              >
-                {docPath.storeName.stringValue}
-              </div>
-            );
-          })
-        : data.map((el: any) => {
-            const docPath = el._document.data.value.mapValue.fields;
-            const addr = docPath.addr.stringValue.includes(search);
-            const info = docPath.storeInfo.stringValue.includes(search);
-            const name = docPath.storeName.stringValue.includes(search);
+    <>
+      <div id="searchBoxContainer">
+        <input
+          id="searchBox"
+          type="text"
+          placeholder="검색어를 입력해주세요(가게명, 설명, 주소(지번))"
+          onChange={handleSearchWordChange}
+        />
+      </div>
+      <div className="listContainer">
+        {data.map((el: any) => {
+          const docPath = el._document.data.value.mapValue.fields;
+          const isHidden = docPath.hide.booleanValue;
+          const storeName = docPath.storeName.stringValue;
+          const uidMatch = user.uid === docPath.uid.stringValue;
+          const addr = docPath.addr.stringValue.includes(search);
+          const info = docPath.storeInfo.stringValue.includes(search);
+          const name = storeName.includes(search);
 
-            if (docPath.hide.booleanValue === true) return null;
-            if (addr || info || name) {
-              return (
-                <div
-                  key={el._key.path.segments[6]}
-                  className="list"
-                  onClick={(e) => {
-                    handleRouting((e.target as any).textContent);
-                  }}
-                >
-                  {docPath.storeName.stringValue}
-                </div>
-              );
-            }
-          })}
+          if (isHidden) return null;
+          if (seeMine && !uidMatch) return null;
+          if (search !== "" && !addr && !info && !name) return null;
+
+          return (
+            <div
+              key={el._key.path.segments[6]}
+              className={`list ${storeName}`}
+              onClick={(e) => {
+                handleRouting(storeName);
+              }}
+            >
+              {storeName}
+            </div>
+          );
+        })}
+      </div>
       <style jsx>{`
         #searchBoxContainer {
           width: 100%;
-          height: 1.5rem;
-          margin-bottom: 0.3rem;
         }
         #searchBox {
           width: inherit;
+          height: 5vh;
           font-size: 1rem;
-          border: 1px solid gray;
+          border: none;
+          border-bottom: 1px solid black;
           box-sizing: border-box;
-          margin-bottom: 0.3rem;
+          padding: 4px;
+        }
+        .listContainer {
+          width: 100vw;
+          height: 39vh;
+          overflow-y: scroll;
+          padding: 4px;
+          padding-top: 6px;
+        }
+        .listContainer::-webkit-scrollbar {
+          display: none;
         }
         .list {
           width: inherit;
           font-size: 1.5rem;
-          margin-bottom: 0.3rem;
-          margin-left: 0.2rem;
           color: black;
           text-decoration: none;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          padding-bottom: 0.5rem;
         }
       `}</style>
-    </div>
+    </>
   );
 };
 

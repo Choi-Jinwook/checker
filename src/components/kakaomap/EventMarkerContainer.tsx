@@ -19,12 +19,17 @@ const EventMarkerContainer = ({ data }: any) => {
         <div
           style={{
             minWidth: "150px",
+            maxWidth: "200px",
             minHeight: "2rem",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            WebkitLineClamp: 1,
           }}
         >
           <Image
             alt="close"
-            width="14"
+            width="13"
             height="13"
             src="https://t1.daumcdn.net/localimg/localimages/07/mapjsapi/2x/bt_close.gif"
             style={{

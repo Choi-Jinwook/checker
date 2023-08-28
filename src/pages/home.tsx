@@ -3,6 +3,8 @@ import Main from "../components/Main";
 import { collection, getDocs, query } from "firebase/firestore";
 import { authService, dbService } from "@/components/firebase/firebase";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 export interface UserObj {
   email: string | null;
@@ -13,6 +15,7 @@ export interface UserObj {
 
 const Home = ({ data }: any) => {
   const [user, setUser] = useState<UserObj>();
+  const router = useRouter();
 
   useEffect(() => {
     const handleUserObj = (user: UserObj) => {
@@ -34,8 +37,17 @@ const Home = ({ data }: any) => {
         } else {
           handleUserObj(user);
         }
+      } else {
+        toast("로그인을 해주세요", {
+          hideProgressBar: true,
+          autoClose: 1000,
+          type: "error",
+          position: "bottom-center",
+        });
+        router.push("/");
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <Main data={data} user={user} />;

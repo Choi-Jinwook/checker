@@ -196,14 +196,14 @@ const RegStore = () => {
           background-color: rgb(0, 120, 212);
           color: white;
           border: 1px solid #afafaf;
-          border-radius: 20%;
+          border-radius: 0.5rem;
           width: 3rem;
           height: 2rem;
         }
         .cancle {
           background-color: white;
           border: 1px solid #afafaf;
-          border-radius: 20%;
+          border-radius: 0.5rem;
           width: 3rem;
           height: 2rem;
         }

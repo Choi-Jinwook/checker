@@ -6,6 +6,7 @@ import { authService } from "./firebase/firebase";
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/Auth.module.css";
+import { toast } from "react-toastify";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -24,10 +25,20 @@ const Auth = () => {
           email,
           password
         );
-        alert("회원가입에 성공했습니다.");
+        toast("회원가입에 성공했습니다.", {
+          hideProgressBar: true,
+          autoClose: 1000,
+          type: "success",
+          position: "bottom-center",
+        });
       } else {
         data = await signInWithEmailAndPassword(authService, email, password);
-        alert("로그인에 성공했습니다.");
+        toast("로그인에 성공했습니다.", {
+          hideProgressBar: true,
+          autoClose: 1000,
+          type: "success",
+          position: "bottom-center",
+        });
       }
       router.push("/home", undefined, { shallow: true });
     } catch (error) {

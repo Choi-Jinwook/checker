@@ -1,5 +1,5 @@
 import MainHeader from "@/components/Headers/MainHeader";
-import Footer from "@/components/Layout";
+import Footer from "@/components/Footer";
 import ListSearch from "@/components/Search/ListSearch";
 import Seo from "@/components/Seo";
 import KakaoMap from "@/components/kakaomap/KaKaoMap";
@@ -32,21 +32,13 @@ export default function Main({ data, user }: any) {
   };
 
   return (
-    <>
+    <Footer>
+      <Seo title="Home" />
+      <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
+      <KakaoMap seeMine={seeMine} data={data} user={user} init={init} />
       {user ? (
-        <Footer>
-          <Seo title="Home" />
-          <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
-          <KakaoMap seeMine={seeMine} data={data} user={user} init={init} />
-          <ListSearch seeMine={seeMine} data={data} user={user} init={init} />
-        </Footer>
-      ) : (
-        <Footer>
-          <Seo title="Home" />
-          <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
-          <KakaoMap seeMine={seeMine} data={data} user={user} init={init} />
-        </Footer>
-      )}
-    </>
+        <ListSearch seeMine={seeMine} data={data} user={user} init={init} />
+      ) : null}
+    </Footer>
   );
 }
