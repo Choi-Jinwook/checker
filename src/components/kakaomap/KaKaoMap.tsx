@@ -77,12 +77,11 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
           {seeMine ? (
             <>
               {data.map((el: any) => {
-                const docPath = el._document.data.value.mapValue.fields;
                 return (
-                  docPath.uid.stringValue === user?.uid && (
+                  el.uid === user?.uid && (
                     <EventMarkerContainer
-                      key={el._key.path.segments[6]}
-                      data={docPath}
+                      key={el.id}
+                      data={el}
                     ></EventMarkerContainer>
                   )
                 );
@@ -91,12 +90,11 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
           ) : (
             <>
               {data.map((el: any) => {
-                const docPath = el._document.data.value.mapValue.fields;
-                if (docPath.hide.booleanValue) return null;
+                if (el.hide) return null;
                 return (
                   <EventMarkerContainer
-                    key={el._key.path.segments[6]}
-                    data={docPath}
+                    key={el.id}
+                    data={el}
                   ></EventMarkerContainer>
                 );
               })}
@@ -124,15 +122,12 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
           )}
 
           {/* {data.map((el: any) => {
-          const docPath = el._document.data.value.mapValue.fields;
-          console.log(docPath);
-
           return (
             <React.Fragment key={el._key.path.segments[6]}>
               <MapMarker
                 position={{
-                  lat: docPath.lat.stringValue,
-                  lng: docPath.lng.stringValue,
+                  lat: el.lat,
+                  lng: el.lng,
                 }}
                 onClick={() => {
                   setIsMarkerInfoOpen((prev) => !prev);
@@ -141,8 +136,8 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
               >
                 {isMarkerInfoOpen && (
                   <StoreInfo
-                    lat={docPath.lat.stringValue}
-                    lng={docPath.lng.stringValue}
+                    lat={el.lat}
+                    lng={el.lng}
                     add={add}
                     toggleInfo={toggleInfo}
                   />

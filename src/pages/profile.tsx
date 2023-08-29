@@ -10,6 +10,7 @@ import bookmark from "../../public/bookmark.png";
 export default function Profile() {
   const [user, setUser] = useState<any>();
   const router = useRouter();
+  const data = router.query.data;
   const handleLogout = () => {
     const answer = confirm("로그아웃 하시겠습니까?");
     if (answer) {
@@ -23,7 +24,7 @@ export default function Profile() {
   }, []);
 
   return (
-    <Footer>
+    <Footer data={data}>
       <div className="container">
         <div className="headerContainer">
           <div className="header">프로필</div>

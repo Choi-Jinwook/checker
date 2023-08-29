@@ -26,12 +26,11 @@ const ListSearch = ({ data, seeMine, user }: Marker) => {
       </div>
       <div className="listContainer">
         {data.map((el: any) => {
-          const docPath = el._document.data.value.mapValue.fields;
-          const isHidden = docPath.hide.booleanValue;
-          const storeName = docPath.storeName.stringValue;
-          const uidMatch = user.uid === docPath.uid.stringValue;
-          const addr = docPath.addr.stringValue.includes(search);
-          const info = docPath.storeInfo.stringValue.includes(search);
+          const isHidden = el.hide;
+          const storeName = el.storeName;
+          const uidMatch = user.uid === el.uid;
+          const addr = el.addr.includes(search);
+          const info = el.storeInfo.includes(search);
           const name = storeName.includes(search);
 
           if (isHidden) return null;
@@ -40,7 +39,7 @@ const ListSearch = ({ data, seeMine, user }: Marker) => {
 
           return (
             <div
-              key={el._key.path.segments[6]}
+              key={el.id}
               className={`list ${storeName}`}
               onClick={(e) => {
                 handleRouting(storeName);

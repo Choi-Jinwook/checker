@@ -1,39 +1,50 @@
 import Footer from "@/components/Footer";
 import { dbService } from "@/components/firebase/firebase";
 import { collection, doc, getDocs, query, updateDoc } from "firebase/firestore";
-import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import heart from "../../public/heart.png";
+import clickedHeart from "../../public/clickedHeart.png";
 import comment from "../../public/comment.png";
 import dm from "../../public/dm.png";
 import bookmark from "../../public/bookmark.png";
 import profile from "../../public/profile.png";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
-export default function Community({ data }: any) {
-  console.log(data);
-
+export default function Community() {
   const [isClicked, setIsClicked] = useState(false);
-  const [likes, setLikes] = useState<{ id: any; like: any }[]>([
-    { id: "", like: 0 },
-  ]);
+  const [data, setData] = useState<any[]>();
+  const router = useRouter();
 
   useEffect(() => {
-    const updatedLikes = data.map((el: any) => ({
-      id: el._key.path.segments[6],
-      like: el._document.data.value.mapValue.fields.likes?.integerValue,
-    }));
-    setLikes(updatedLikes);
+    const fetchData = async () => {
+      const q = query(collection(dbService, "mystore"));
+      const querySnapshot = await getDocs(q);
+      const dataArray: any[] = [];
+      querySnapshot.forEach((doc: any) => {
+        const data = doc.data();
+        dataArray.push({
+          ...data,
+          id: doc._key.path.segments[6],
+          combinedTimestamp:
+            doc._document.createTime.timestamp.seconds * 1000 +
+            doc._document.createTime.timestamp.nanoseconds / 1000000,
+        });
+      });
+      dataArray.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp);
+      setData(dataArray);
+    };
+    fetchData();
   }, [data]);
 
   const handleClick = async (id: any) => {
     let currentLikes = 0;
-    likes.forEach((el: any) => {
+    data?.forEach((el: any) => {
       if (el.id === id) {
-        currentLikes = el.like;
+        currentLikes = el.likes;
+        return;
       }
     });
-    console.log(currentLikes);
     // user like list 만들어야할듯
 
     if (!isClicked) {
@@ -52,56 +63,66 @@ export default function Community({ data }: any) {
   };
 
   return (
-    <Footer>
+    <Footer data={data}>
       <div className="container">
         <div className="headerContainer">
           <div className="header">커뮤니티</div>
         </div>
-        {data.map((el: any, index: number) => {
-          const docPath = el._document.data.value.mapValue.fields;
-          if (docPath.hide.booleanValue === true) return null;
+        {data ? (
+          data?.map((el: any) => {
+            if (el.hide === true) return null;
 
-          return (
-            <React.Fragment key={el._key.path.segments[6]}>
-              <div className="contentContainer">
-                <div className="item profileImage">
-                  <Image src={profile} alt="profile" width={35} height={35} />
+            return (
+              <React.Fragment key={el.id}>
+                <div className="contentContainer">
+                  <div className="item profileImage">
+                    <Image src={profile} alt="profile" width={35} height={35} />
+                  </div>
+                  <div className="item userName">{el.creatorName}</div>
+                  <div className="item storeName">{el.storeName}</div>
+                  <div className="item photo">photo</div>
+                  <div className="item likesButton">
+                    {isClicked ? (
+                      <Image
+                        src={clickedHeart}
+                        alt="clickedHeart"
+                        width={25}
+                        height={25}
+                        onClick={() => handleClick(el.id)}
+                      />
+                    ) : (
+                      <Image
+                        src={heart}
+                        alt="heart"
+                        width={25}
+                        height={25}
+                        onClick={() => handleClick(el.id)}
+                      />
+                    )}
+                  </div>
+                  <div className="item commentButton">
+                    <Image src={comment} alt="comment" width={30} height={30} />
+                  </div>
+                  <div className="item DMButton">
+                    <Image src={dm} alt="dm" width={25} height={25} />
+                  </div>
+                  <div className="item Bookmark">
+                    <Image
+                      src={bookmark}
+                      alt="bookmark"
+                      width={23}
+                      height={23}
+                    />
+                  </div>
+                  <div className="item numofLikes">{el.likes} Likes</div>
+                  <div className="item content">{el.storeInfo}</div>
                 </div>
-                <div className="item userName">
-                  {docPath.creatorName.stringValue}
-                </div>
-                <div className="item storeName">
-                  {docPath.storeName.stringValue}
-                </div>
-                <div className="item photo">photo</div>
-                <div className="item likesButton">
-                  <Image
-                    src={heart}
-                    alt="heart"
-                    width={25}
-                    height={25}
-                    onClick={() => handleClick(el._key.path.segments[6])}
-                  />
-                </div>
-                <div className="item commentButton">
-                  <Image src={comment} alt="comment" width={30} height={30} />
-                </div>
-                <div className="item DMButton">
-                  <Image src={dm} alt="dm" width={25} height={25} />
-                </div>
-                <div className="item Bookmark">
-                  <Image src={bookmark} alt="bookmark" width={23} height={23} />
-                </div>
-                <div className="item numofLikes">
-                  {likes[index]?.like} Likes
-                </div>
-                <div className="item content">
-                  {docPath.storeInfo.stringValue}
-                </div>
-              </div>
-            </React.Fragment>
-          );
-        })}
+              </React.Fragment>
+            );
+          })
+        ) : (
+          <div>Loading...</div>
+        )}
       </div>
       <style jsx>{`
         .container {
@@ -199,31 +220,3 @@ export default function Community({ data }: any) {
     </Footer>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const q = query(collection(dbService, "mystore"));
-  const data: Array<any> = [];
-  const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    data.push(doc);
-  });
-
-  data.forEach((item: any) => {
-    const seconds = item._document.createTime.timestamp.seconds;
-    const nanoseconds = item._document.createTime.timestamp.nanoseconds;
-    const combinedTimestamp = seconds * 1000 + nanoseconds / 1000000;
-    item._document.createTime.combinedTimestamp = combinedTimestamp;
-  });
-
-  data.sort(
-    (a: any, b: any) =>
-      b._document.createTime.combinedTimestamp -
-      a._document.createTime.combinedTimestamp
-  );
-
-  return {
-    props: {
-      data: JSON.parse(JSON.stringify(data)),
-    },
-  };
-};

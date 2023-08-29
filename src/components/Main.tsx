@@ -32,7 +32,7 @@ export default function Main({ data, user }: any) {
   };
 
   return (
-    <Footer>
+    <Footer data={data}>
       <Seo title="Home" />
       <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
       <KakaoMap seeMine={seeMine} data={data} user={user} init={init} />

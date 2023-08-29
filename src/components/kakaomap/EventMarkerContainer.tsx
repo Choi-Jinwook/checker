@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MapMarker } from "react-kakao-maps-sdk";
 
 const EventMarkerContainer = ({ data }: any) => {
@@ -10,8 +10,8 @@ const EventMarkerContainer = ({ data }: any) => {
   return (
     <MapMarker
       position={{
-        lat: data.lat.stringValue,
-        lng: data.lng.stringValue,
+        lat: data.lat,
+        lng: data.lng,
       }}
       onClick={() => setIsVisible((prev) => !prev)}
     >
@@ -43,12 +43,12 @@ const EventMarkerContainer = ({ data }: any) => {
           <div
             className="storeName storeInfo"
             onClick={() => {
-              router.push(`/storeinfo/${data.storeName.stringValue}`);
+              router.push(`/storeinfo/${data.storeName}`);
             }}
           >
-            {data.storeName.stringValue}
+            {data.storeName}
           </div>
-          <div className="storeInfo">등록: {data.creatorName.stringValue}</div>
+          <div className="storeInfo">등록: {data.creatorName}</div>
           <style jsx>{`
             .storeName {
               background-color: rgb(214, 214, 214);

@@ -13,11 +13,15 @@ export interface UserObj {
   updateProfile: any;
 }
 
-const Home = ({ data }: any) => {
+const Home = ({ initialData }: any) => {
+  const [data, setData] = useState<any>(initialData);
   const [user, setUser] = useState<UserObj>();
   const router = useRouter();
+  console.log(data);
 
   useEffect(() => {
+    console.log(router);
+
     const handleUserObj = (user: UserObj) => {
       setUser({
         email: user.email,
@@ -55,15 +59,23 @@ const Home = ({ data }: any) => {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const q = query(collection(dbService, "mystore"));
-  const data: Array<any> = [];
   const querySnapshot = await getDocs(q);
-  querySnapshot.forEach((doc) => {
-    data.push(doc);
+  const dataArray: any[] = [];
+  querySnapshot.forEach((doc: any) => {
+    const data = doc.data();
+    dataArray.push({
+      ...data,
+      id: doc._key.path.segments[6],
+      combinedTimestamp:
+        doc._document.createTime.timestamp.seconds * 1000 +
+        doc._document.createTime.timestamp.nanoseconds / 1000000,
+    });
   });
+  dataArray.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp);
 
   return {
     props: {
-      data: JSON.parse(JSON.stringify(data)),
+      initialData: dataArray,
     },
   };
 };
