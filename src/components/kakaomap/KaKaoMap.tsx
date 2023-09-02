@@ -3,6 +3,7 @@ import { Map, MapMarker } from "react-kakao-maps-sdk";
 import StoreInfo from "./StoreInfo";
 import { UserObj } from "@/pages/home";
 import EventMarkerContainer from "./EventMarkerContainer";
+import { useStoreData } from "@/hooks";
 
 export interface Coords {
   lat: number;
@@ -10,13 +11,12 @@ export interface Coords {
 }
 
 export interface Marker {
-  data: any;
   seeMine: boolean;
   user: UserObj;
   init: boolean;
 }
 
-const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
+const KakaoMap = ({ seeMine, user, init }: Marker) => {
   const [myCoords, setMyCoords] = useState<Coords>({
     lat: 0,
     lng: 0,
@@ -27,6 +27,7 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
   });
   const [isMarkerInfoOpen, setIsMarkerInfoOpen] = useState(false);
   const [add, setAdd] = useState(true);
+  const { data: dataArray } = useStoreData();
 
   const toggleInfo = () => {
     // static, dynamic
@@ -76,7 +77,7 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
           {/* seemine에 따른 저장된 마커 보이기 */}
           {seeMine ? (
             <>
-              {data.map((el: any) => {
+              {dataArray?.map((el: any) => {
                 return (
                   el.uid === user?.uid && (
                     <EventMarkerContainer
@@ -89,7 +90,7 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
             </>
           ) : (
             <>
-              {data.map((el: any) => {
+              {dataArray?.map((el: any) => {
                 if (el.hide) return null;
                 return (
                   <EventMarkerContainer
@@ -120,32 +121,6 @@ const KakaoMap = ({ data, seeMine, user, init }: Marker) => {
               )}
             </MapMarker>
           )}
-
-          {/* {data.map((el: any) => {
-          return (
-            <React.Fragment key={el._key.path.segments[6]}>
-              <MapMarker
-                position={{
-                  lat: el.lat,
-                  lng: el.lng,
-                }}
-                onClick={() => {
-                  setIsMarkerInfoOpen((prev) => !prev);
-                  setAdd(false);
-                }}
-              >
-                {isMarkerInfoOpen && (
-                  <StoreInfo
-                    lat={el.lat}
-                    lng={el.lng}
-                    add={add}
-                    toggleInfo={toggleInfo}
-                  />
-                )}
-              </MapMarker>
-            </React.Fragment>
-          );
-        })} */}
         </Map>
       )}
     </>

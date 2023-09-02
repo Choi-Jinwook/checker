@@ -7,27 +7,18 @@ import profile from "../../public/profile.png";
 
 interface MyComponentProps {
   children: ReactNode;
-  data: any;
 }
 
-const Footer = ({ children, data }: MyComponentProps) => {
+const Footer = ({ children }: MyComponentProps) => {
   return (
     <>
       <footer className="container">
-        <Link
-          legacyBehavior
-          href={{ pathname: "/home", query: { data: data } }}
-          as="/home"
-        >
+        <Link legacyBehavior href="/home">
           <a className="footer">
             <Image src={home} alt="home" width={28} height={28} />
           </a>
         </Link>
-        <Link
-          legacyBehavior
-          href={{ pathname: "/community", query: { data: data } }}
-          as="/community"
-        >
+        <Link legacyBehavior href="/community">
           <a className="footer">
             <Image
               src={community}
@@ -38,11 +29,7 @@ const Footer = ({ children, data }: MyComponentProps) => {
             />
           </a>
         </Link>
-        <Link
-          legacyBehavior
-          href={{ pathname: "/profile", query: { data: data } }}
-          as="/profile"
-        >
+        <Link legacyBehavior href="/profile">
           <a className="footer">
             <Image src={profile} alt="profile" width={28} height={28} />
           </a>

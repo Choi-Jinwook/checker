@@ -1,10 +1,12 @@
 import { ChangeEvent, useState } from "react";
 import { Marker } from "../kakaomap/KaKaoMap";
 import { useRouter } from "next/router";
+import { useStoreData } from "@/hooks";
 
-const ListSearch = ({ data, seeMine, user }: Marker) => {
+const ListSearch = ({ seeMine, user }: Marker) => {
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const { data: dataArray } = useStoreData();
 
   const handleSearchWordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -25,7 +27,7 @@ const ListSearch = ({ data, seeMine, user }: Marker) => {
         />
       </div>
       <div className="listContainer">
-        {data.map((el: any) => {
+        {dataArray?.map((el: any) => {
           const isHidden = el.hide;
           const storeName = el.storeName;
           const uidMatch = user.uid === el.uid;

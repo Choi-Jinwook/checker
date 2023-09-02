@@ -1,7 +1,6 @@
-import Footer from "@/components/Footer";
 import { dbService } from "@/components/firebase/firebase";
-import { collection, doc, getDocs, query, updateDoc } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { doc, updateDoc } from "firebase/firestore";
+import React, { useState } from "react";
 import heart from "../../public/heart.png";
 import clickedHeart from "../../public/clickedHeart.png";
 import comment from "../../public/comment.png";
@@ -9,37 +8,15 @@ import dm from "../../public/dm.png";
 import bookmark from "../../public/bookmark.png";
 import profile from "../../public/profile.png";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { useStoreData } from "@/hooks";
 
 export default function Community() {
   const [isClicked, setIsClicked] = useState(false);
-  const [data, setData] = useState<any[]>();
-  const router = useRouter();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const q = query(collection(dbService, "mystore"));
-      const querySnapshot = await getDocs(q);
-      const dataArray: any[] = [];
-      querySnapshot.forEach((doc: any) => {
-        const data = doc.data();
-        dataArray.push({
-          ...data,
-          id: doc._key.path.segments[6],
-          combinedTimestamp:
-            doc._document.createTime.timestamp.seconds * 1000 +
-            doc._document.createTime.timestamp.nanoseconds / 1000000,
-        });
-      });
-      dataArray.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp);
-      setData(dataArray);
-    };
-    fetchData();
-  }, [data]);
+  const { data: dataArray } = useStoreData();
 
   const handleClick = async (id: any) => {
     let currentLikes = 0;
-    data?.forEach((el: any) => {
+    dataArray?.forEach((el: any) => {
       if (el.id === id) {
         currentLikes = el.likes;
         return;
@@ -63,13 +40,13 @@ export default function Community() {
   };
 
   return (
-    <Footer data={data}>
+    <>
       <div className="container">
         <div className="headerContainer">
           <div className="header">커뮤니티</div>
         </div>
-        {data ? (
-          data?.map((el: any) => {
+        {dataArray ? (
+          dataArray?.map((el: any) => {
             if (el.hide === true) return null;
 
             return (
@@ -217,6 +194,6 @@ export default function Community() {
           display: none;
         }
       `}</style>
-    </Footer>
+    </>
   );
 }

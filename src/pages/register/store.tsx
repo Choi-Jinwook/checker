@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 import { authService, dbService } from "../../components/firebase/firebase";
 import { useRouter } from "next/router";
-import Seo from "@/components/Seo";
+import { toast } from "react-toastify";
 
 declare global {
   interface Window {
@@ -72,9 +72,20 @@ const RegStore = () => {
         await addDoc(collection(dbService, "mystore"), storeObj);
       } catch (error) {
         if (error instanceof Error) {
-          alert(error);
+          toast(`${error}`, {
+            hideProgressBar: true,
+            autoClose: 1000,
+            type: "error",
+            position: "bottom-center",
+          });
         }
       }
+      toast("장소 정보가 등록되었습니다.", {
+        hideProgressBar: true,
+        autoClose: 1000,
+        type: "success",
+        position: "bottom-center",
+      });
       router.push("/home");
     }
   };
@@ -91,7 +102,6 @@ const RegStore = () => {
 
   return (
     <>
-      <Seo title="Register" />
       <form onSubmit={onSubmit}>
         <div className="category">스크롤형 카테고리(추후 업데이트 예정)</div>
         <div className="storeNameContainer">

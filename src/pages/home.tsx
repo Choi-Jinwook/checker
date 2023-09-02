@@ -1,10 +1,9 @@
-import { GetServerSideProps } from "next";
 import Main from "../components/Main";
-import { collection, getDocs, query } from "firebase/firestore";
-import { authService, dbService } from "@/components/firebase/firebase";
+import { authService } from "@/components/firebase/firebase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { useStoreData } from "@/hooks";
 
 export interface UserObj {
   email: string | null;
@@ -13,11 +12,10 @@ export interface UserObj {
   updateProfile: any;
 }
 
-const Home = ({ initialData }: any) => {
-  const [data, setData] = useState<any>(initialData);
+const Home = () => {
   const [user, setUser] = useState<UserObj>();
+  const { data: dataArray, isLoading, isError } = useStoreData();
   const router = useRouter();
-  console.log(data);
 
   useEffect(() => {
     console.log(router);
@@ -54,30 +52,15 @@ const Home = ({ initialData }: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <Main data={data} user={user} />;
-};
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const q = query(collection(dbService, "mystore"));
-  const querySnapshot = await getDocs(q);
-  const dataArray: any[] = [];
-  querySnapshot.forEach((doc: any) => {
-    const data = doc.data();
-    dataArray.push({
-      ...data,
-      id: doc._key.path.segments[6],
-      combinedTimestamp:
-        doc._document.createTime.timestamp.seconds * 1000 +
-        doc._document.createTime.timestamp.nanoseconds / 1000000,
-    });
-  });
-  dataArray.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp);
+  if (isError) {
+    return <div>Error fetching data</div>;
+  }
 
-  return {
-    props: {
-      initialData: dataArray,
-    },
-  };
+  return <Main data={dataArray} user={user} />;
 };
 
 export default Home;
