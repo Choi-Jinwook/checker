@@ -1,4 +1,3 @@
-import Footer from "@/components/Footer";
 import { useRouter } from "next/router";
 
 export default function Store() {

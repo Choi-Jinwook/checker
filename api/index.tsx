@@ -1,5 +1,6 @@
-import { dbService } from "@/components/firebase/firebase";
-import { collection, getDocs, query } from "firebase/firestore";
+import { authService, dbService } from "@/components/firebase/firebase";
+import { UserObj } from "@/pages/home";
+import { collection, doc, getDocs, query, updateDoc } from "firebase/firestore";
 
 export const fetchStoreData = async () => {
   const q = query(collection(dbService, "mystore"));
@@ -16,10 +17,36 @@ export const fetchStoreData = async () => {
     });
   });
   dataArray.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp);
-
-  console.log(dataArray);
-
   return dataArray;
 };
 
-export const fetchUserData = async () => {};
+export const fetchLikes = async (id: string, uid: string[], likes: number) => {
+  await updateDoc(doc(dbService, "mystore", `${id}`), {
+    likeUserList: uid,
+    likes: likes,
+  });
+};
+
+export const fetchUserData = async () => {
+  return new Promise<UserObj | null>((resolve) => {
+    authService.onAuthStateChanged((user: any) => {
+      if (user) {
+        let userData;
+        if (user.displayName === null) {
+          const name = user.email.split("@")[0];
+          user.displayName = name;
+        }
+        userData = {
+          email: user.email,
+          displayName: user.displayName,
+          uid: user.uid,
+          updateProfile: () =>
+            user.updateProfile(user, { displayName: user.displayName }),
+        };
+        resolve(userData);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+};

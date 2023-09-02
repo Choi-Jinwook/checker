@@ -1,6 +1,4 @@
-import { dbService } from "@/components/firebase/firebase";
-import { doc, updateDoc } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import heart from "../../public/heart.png";
 import clickedHeart from "../../public/clickedHeart.png";
 import comment from "../../public/comment.png";
@@ -8,34 +6,81 @@ import dm from "../../public/dm.png";
 import bookmark from "../../public/bookmark.png";
 import profile from "../../public/profile.png";
 import Image from "next/image";
-import { useStoreData } from "@/hooks";
+import { useStoreData, useUserData } from "@/hooks";
+import { doc, onSnapshot } from "firebase/firestore";
+import { dbService } from "@/components/firebase/firebase";
+import { fetchLikes } from "../../api";
+import { queryClient } from "./_app";
 
 export default function Community() {
-  const [isClicked, setIsClicked] = useState(false);
+  const { data: userData } = useUserData();
   const { data: dataArray } = useStoreData();
+  const [likes, setLikes] = useState<
+    { id: string; likeUserList: string[]; likes: number }[]
+  >([{ id: "", likeUserList: [""], likes: 0 }]);
+
+  useEffect(() => {
+    const initialLikes = dataArray?.map((el: any) => ({
+      id: el.id,
+      likeUserList: el.likeUserList || [""],
+      likes: el.likes || 0,
+    }));
+    if (initialLikes) setLikes(initialLikes);
+
+    dataArray?.forEach((el: any) => {
+      const unsubscribe = onSnapshot(
+        doc(dbService, "mystore", el.id),
+        (snapshot) => {
+          const updatedLikesCount = snapshot.data()?.likes || 0;
+          setLikes((prevLikes) =>
+            prevLikes.map((like) =>
+              like.id === el.id ? { ...like, likes: updatedLikesCount } : like
+            )
+          );
+        }
+      );
+
+      return () => unsubscribe();
+    });
+  }, [dataArray]);
 
   const handleClick = async (id: any) => {
-    let currentLikes = 0;
-    dataArray?.forEach((el: any) => {
-      if (el.id === id) {
-        currentLikes = el.likes;
-        return;
-      }
-    });
-    // user like list 만들어야할듯
+    const itemToUpdate = dataArray?.find((el: any) => el.id === id);
+    const isUserLikes = itemToUpdate.likeUserList.includes(userData?.uid);
 
-    if (!isClicked) {
-      setIsClicked(true);
-      currentLikes++;
-      await updateDoc(doc(dbService, "mystore", `${id}`), {
-        likes: currentLikes,
+    if (itemToUpdate) {
+      const updatedLikes = isUserLikes
+        ? itemToUpdate.likes - 1
+        : itemToUpdate.likes + 1;
+
+      let updatedLikeUsers: any;
+
+      if (Array.isArray(itemToUpdate.likeUserList)) {
+        if (isUserLikes) {
+          updatedLikeUsers = itemToUpdate.likeUserList.filter(
+            (user: string) => user !== userData?.uid
+          );
+        } else {
+          updatedLikeUsers = [...itemToUpdate.likeUserList, userData?.uid];
+        }
+      } else {
+        updatedLikeUsers = [userData?.uid];
+      }
+
+      const newDataArray = dataArray?.map((el: any) => {
+        if (el.id === id) {
+          return {
+            id: el.id,
+            likeUserList: updatedLikeUsers,
+            likes: updatedLikes,
+          };
+        }
+        return { id: el.id, likeUserList: el.likeUserList, likes: el.likes };
       });
-    } else {
-      setIsClicked(false);
-      currentLikes--;
-      await updateDoc(doc(dbService, "mystore", `${id}`), {
-        likes: currentLikes,
-      });
+
+      if (newDataArray) setLikes(newDataArray);
+      await fetchLikes(id, updatedLikeUsers, updatedLikes);
+      queryClient.invalidateQueries("data");
     }
   };
 
@@ -59,7 +104,7 @@ export default function Community() {
                   <div className="item storeName">{el.storeName}</div>
                   <div className="item photo">photo</div>
                   <div className="item likesButton">
-                    {isClicked ? (
+                    {el.likeUserList?.includes(userData?.uid) ? (
                       <Image
                         src={clickedHeart}
                         alt="clickedHeart"
@@ -91,7 +136,9 @@ export default function Community() {
                       height={23}
                     />
                   </div>
-                  <div className="item numofLikes">{el.likes} Likes</div>
+                  <div className="item numofLikes">
+                    {likes?.find((item) => item.id === el.id)?.likes} Likes
+                  </div>
                   <div className="item content">{el.storeInfo}</div>
                 </div>
               </React.Fragment>

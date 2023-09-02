@@ -12,11 +12,10 @@ export interface Coords {
 
 export interface Marker {
   seeMine: boolean;
-  user: UserObj;
-  init: boolean;
+  user: UserObj | null | undefined;
 }
 
-const KakaoMap = ({ seeMine, user, init }: Marker) => {
+const KakaoMap = ({ seeMine, user }: Marker) => {
   const [myCoords, setMyCoords] = useState<Coords>({
     lat: 0,
     lng: 0,
@@ -61,68 +60,66 @@ const KakaoMap = ({ seeMine, user, init }: Marker) => {
 
   return (
     <>
-      {init && (
-        <Map
-          id="kakaoMap"
-          center={{ lat: myCoords.lat, lng: myCoords.lng }}
-          style={{ width: "100%", height: "45vh", marginBottom: "0.1rem" }}
-          onClick={(_t, mouseEvent) => {
-            setClickCoords({
-              lat: mouseEvent.latLng.getLat(),
-              lng: mouseEvent.latLng.getLng(),
-            });
-            setIsMarkerInfoOpen(false);
-          }}
-        >
-          {/* seemine에 따른 저장된 마커 보이기 */}
-          {seeMine ? (
-            <>
-              {dataArray?.map((el: any) => {
-                return (
-                  el.uid === user?.uid && (
-                    <EventMarkerContainer
-                      key={el.id}
-                      data={el}
-                    ></EventMarkerContainer>
-                  )
-                );
-              })}
-            </>
-          ) : (
-            <>
-              {dataArray?.map((el: any) => {
-                if (el.hide) return null;
-                return (
+      <Map
+        id="kakaoMap"
+        center={{ lat: myCoords.lat, lng: myCoords.lng }}
+        style={{ width: "100%", height: "45vh", marginBottom: "0.1rem" }}
+        onClick={(_t, mouseEvent) => {
+          setClickCoords({
+            lat: mouseEvent.latLng.getLat(),
+            lng: mouseEvent.latLng.getLng(),
+          });
+          setIsMarkerInfoOpen(false);
+        }}
+      >
+        {/* seemine에 따른 저장된 마커 보이기 */}
+        {seeMine ? (
+          <>
+            {dataArray?.map((el: any) => {
+              return (
+                el.uid === user?.uid && (
                   <EventMarkerContainer
                     key={el.id}
                     data={el}
                   ></EventMarkerContainer>
-                );
-              })}
-            </>
-          )}
+                )
+              );
+            })}
+          </>
+        ) : (
+          <>
+            {dataArray?.map((el: any) => {
+              if (el.hide) return null;
+              return (
+                <EventMarkerContainer
+                  key={el.id}
+                  data={el}
+                ></EventMarkerContainer>
+              );
+            })}
+          </>
+        )}
 
-          {/* Current Map Marker */}
-          {clickCoords.lat !== 0 && clickCoords.lng !== 0 && (
-            <MapMarker
-              position={{ lat: clickCoords.lat, lng: clickCoords.lng }}
-              onClick={() => {
-                setIsMarkerInfoOpen((prev) => !prev);
-                setAdd(true);
-              }}
-            >
-              {isMarkerInfoOpen && (
-                <StoreInfo
-                  lat={clickCoords.lat}
-                  lng={clickCoords.lng}
-                  add={add}
-                  toggleInfo={toggleInfo}
-                />
-              )}
-            </MapMarker>
-          )}
-        </Map>
-      )}
+        {/* Current Map Marker */}
+        {clickCoords.lat !== 0 && clickCoords.lng !== 0 && (
+          <MapMarker
+            position={{ lat: clickCoords.lat, lng: clickCoords.lng }}
+            onClick={() => {
+              setIsMarkerInfoOpen((prev) => !prev);
+              setAdd(true);
+            }}
+          >
+            {isMarkerInfoOpen && (
+              <StoreInfo
+                lat={clickCoords.lat}
+                lng={clickCoords.lng}
+                add={add}
+                toggleInfo={toggleInfo}
+              />
+            )}
+          </MapMarker>
+        )}
+      </Map>
     </>
   );
 };

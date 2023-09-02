@@ -57,7 +57,7 @@ const Auth = () => {
     }
   };
 
-  const handleLoginToggle = () => {
+  const toggleLoginSignup = () => {
     setLogin((prev) => !prev);
     setError("");
   };
@@ -85,7 +85,7 @@ const Auth = () => {
           value={login ? "로그인" : "회원가입"}
         />
       </form>
-      <span className={styles.convert} onClick={handleLoginToggle}>
+      <span className={styles.convert} onClick={toggleLoginSignup}>
         {login ? "회원가입으로 전환" : "로그인으로 전환"}
       </span>
       <span className={styles.errorMsg}>{error}</span>

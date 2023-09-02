@@ -1,7 +1,8 @@
 import MainHeader from "@/components/Headers/MainHeader";
 import ListSearch from "@/components/Search/ListSearch";
 import KakaoMap from "@/components/kakaomap/KaKaoMap";
-import { useEffect, useState } from "react";
+import { useUserData } from "@/hooks";
+import { useState } from "react";
 
 export interface MarkerInfo {
   lat: number;
@@ -15,25 +16,22 @@ export interface MarkerInfo {
   uid: string;
 }
 
-export default function Main({ user }: any) {
+export default function Main() {
   const [seeMine, setSeeMine] = useState<boolean>(true);
-  const [init, setInit] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (user) {
-      setInit(true);
-    }
-  }, [user]);
+  const { data: userData, isLoading, isError } = useUserData();
 
   const toggleSeeMine = () => {
     setSeeMine((prev) => !prev);
   };
 
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error occured</div>;
+
   return (
     <>
       <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
-      <KakaoMap seeMine={seeMine} user={user} init={init} />
-      {user ? <ListSearch seeMine={seeMine} user={user} init={init} /> : null}
+      <KakaoMap seeMine={seeMine} user={userData} />
+      {userData ? <ListSearch seeMine={seeMine} user={userData} /> : null}
     </>
   );
 }
