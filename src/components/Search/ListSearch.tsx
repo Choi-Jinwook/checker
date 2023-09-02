@@ -43,9 +43,7 @@ const ListSearch = ({ seeMine, user }: Marker) => {
             <div
               key={el.id}
               className={`list ${storeName}`}
-              onClick={(e) => {
-                handleRouting(storeName);
-              }}
+              onClick={() => handleRouting(storeName)}
             >
               {storeName}
             </div>

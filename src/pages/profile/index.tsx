@@ -2,14 +2,13 @@ import { authService } from "@/components/firebase/firebase";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import profile from "../../public/profile.png";
-import list from "../../public/list.png";
-import bookmark from "../../public/bookmark.png";
-import { useStoreData } from "@/hooks";
+import profile from "../../../public/profile.png";
+import list from "../../../public/list.png";
+import bookmark from "../../../public/bookmark.png";
+import Link from "next/link";
 
 export default function Profile() {
   const [user, setUser] = useState<any>();
-  const { data: dataArray } = useStoreData();
   const router = useRouter();
   const handleLogout = () => {
     const answer = confirm("로그아웃 하시겠습니까?");
@@ -46,24 +45,46 @@ export default function Profile() {
         </div>
         <div className="userListContainer">
           <div className="myLikeList">
-            <Image
-              className="listImage"
-              src={list}
-              alt="list"
-              width={30}
-              height={30}
-            />
-            내 좋아요 목록
+            <Link
+              style={{
+                display: "flex",
+                gap: "1rem",
+                color: "black",
+                textDecoration: "none",
+                alignItems: "center",
+              }}
+              href="/profile/mylikelist"
+            >
+              <Image
+                className="listImage"
+                src={list}
+                alt="list"
+                width={30}
+                height={30}
+              />
+              내 좋아요 목록
+            </Link>
           </div>
           <div className="myBookmarkList">
-            <Image
-              className="bookmarkImage"
-              src={bookmark}
-              alt="bookmark"
-              width={30}
-              height={30}
-            />
-            내 북마크 목록
+            <Link
+              style={{
+                display: "flex",
+                gap: "1rem",
+                color: "black",
+                textDecoration: "none",
+                alignItems: "center",
+              }}
+              href="/profile/mybookmark"
+            >
+              <Image
+                className="bookmarkImage"
+                src={bookmark}
+                alt="bookmark"
+                width={30}
+                height={30}
+              />
+              내 북마크 목록
+            </Link>
           </div>
         </div>
         <style jsx>{`
@@ -127,9 +148,9 @@ export default function Profile() {
           }
           .myLikeList {
             display: flex;
+            align-items: center;
             width: 100vw;
             height: 7vh;
-            align-items: center;
             font-size: 1rem;
             gap: 1rem;
             padding-left: 1rem;

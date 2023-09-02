@@ -9,8 +9,8 @@ import Image from "next/image";
 import { useStoreData, useUserData } from "@/hooks";
 import { doc, onSnapshot } from "firebase/firestore";
 import { dbService } from "@/components/firebase/firebase";
-import { fetchLikes } from "../../api";
-import { queryClient } from "./_app";
+import { fetchLikes } from "../../../api";
+import { queryClient } from "../_app";
 
 export default function Community() {
   const { data: userData } = useUserData();
@@ -202,7 +202,7 @@ export default function Community() {
         .orderByContainer {
           display: flex;
           flex-direction: row;
-          width: 50vw;
+          width: 40vw;
           align-items: center;
           justify-content: center;
         }
