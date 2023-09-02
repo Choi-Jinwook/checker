@@ -15,9 +15,16 @@ import { queryClient } from "./_app";
 export default function Community() {
   const { data: userData } = useUserData();
   const { data: dataArray } = useStoreData();
+  const [orderBy, setOrderBy] = useState<"latest" | "popularity">("latest");
   const [likes, setLikes] = useState<
     { id: string; likeUserList: string[]; likes: number }[]
   >([{ id: "", likeUserList: [""], likes: 0 }]);
+
+  if (orderBy === "latest") {
+    dataArray?.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp);
+  } else if (orderBy === "popularity") {
+    dataArray?.sort((a, b) => b.likeUserList.length - a.likeUserList.length);
+  }
 
   useEffect(() => {
     const initialLikes = dataArray?.map((el: any) => ({
@@ -84,11 +91,26 @@ export default function Community() {
     }
   };
 
+  /*
+    DM 기능 추가
+    댓글 기능 추가
+      댓글 버튼 클릭 시 Modal 올라옴, 댓글 및 대댓글 작성 가능, 댓글좋아요는 x
+    북마크 기능 추가
+  */
+
   return (
     <>
       <div className="container">
         <div className="headerContainer">
           <div className="header">커뮤니티</div>
+          <div className="orderByContainer">
+            <div className="option1" onClick={() => setOrderBy("latest")}>
+              최신순
+            </div>
+            <div className="option2" onClick={() => setOrderBy("popularity")}>
+              인기순
+            </div>
+          </div>
         </div>
         {dataArray ? (
           dataArray?.map((el: any) => {
@@ -161,20 +183,36 @@ export default function Community() {
           display: none;
         }
         .headerContainer {
+          display: flex;
           position: fixed;
           background-color: white;
           width: 100%;
           height: 5vh;
           z-index: 999;
+          border-bottom: 1px solid black;
         }
         .header {
           display: flex;
-          align-items: center;
-          width: 100%;
+          width: 85%;
           height: 100%;
           font-size: 1.5rem;
-          border-bottom: 1px solid black;
           padding-left: 1rem;
+          align-items: center;
+        }
+        .orderByContainer {
+          display: flex;
+          flex-direction: row;
+          width: 50vw;
+          align-items: center;
+          justify-content: center;
+        }
+        .option1 {
+          background-color: white;
+          width: 100%;
+        }
+        .option2 {
+          background-color: white;
+          width: 100%;
         }
         .contentContainer {
           display: grid;
