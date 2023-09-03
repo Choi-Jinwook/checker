@@ -1,14 +1,14 @@
 import { authService } from "@/components/firebase/firebase";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import profile from "../../../public/profile.png";
 import list from "../../../public/list.png";
 import bookmark from "../../../public/bookmark.png";
 import Link from "next/link";
+import { useUserData } from "@/hooks";
 
 export default function Profile() {
-  const [user, setUser] = useState<any>();
+  const { data: userData } = useUserData();
   const router = useRouter();
   const handleLogout = () => {
     const answer = confirm("로그아웃 하시겠습니까?");
@@ -17,10 +17,6 @@ export default function Profile() {
       router.push("/login");
     }
   };
-
-  useEffect(() => {
-    setUser(authService.currentUser?.displayName);
-  }, []);
 
   return (
     <>
@@ -32,11 +28,7 @@ export default function Profile() {
           <div className="item profileImage">
             <Image src={profile} alt="profile" width={100} height={100} />
           </div>
-          {user ? (
-            <div className="item nickname">{user}</div>
-          ) : (
-            <div className="item nickname"></div>
-          )}
+          <div className="item nickname">{userData?.displayName}</div>
         </div>
         <div className="logoutContainer">
           <button className="logout" onClick={handleLogout}>

@@ -1,9 +1,14 @@
 import { addDoc, collection } from "firebase/firestore";
 import { ChangeEvent, useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
-import { authService, dbService } from "../../components/firebase/firebase";
+import {
+  authService,
+  dbService,
+  storageService,
+} from "../../components/firebase/firebase";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 declare global {
   interface Window {
@@ -14,11 +19,17 @@ declare global {
 const RegStore = () => {
   const [storeName, setStoreName] = useState<string>("");
   const [storeInfo, setStoreInfo] = useState<string>("");
-  const [images, setImages] = useState<File[]>([]);
   const [address, setAddress] = useState<string>("");
+  const [imageFile, setImageFile] = useState<any>();
+  const [imageUrl, setImageUrl] = useState("");
   const [isHide, setIsHide] = useState<boolean>(false);
 
   const router = useRouter();
+
+  const isFileTypeAllowed = (file: File) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    return allowedTypes.includes(file.type);
+  };
 
   const onStoreNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStoreName(e.target.value);
@@ -26,6 +37,74 @@ const RegStore = () => {
 
   const onStoreInfoChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setStoreInfo(e.target.value);
+  };
+
+  const handleSelectedFile = (files: any) => {
+    if (!isFileTypeAllowed(files)) {
+      {
+        toast("jpeg/png/jpg 형식의 파일만 가능합니다.", {
+          hideProgressBar: true,
+          autoClose: 1000,
+          type: "error",
+          position: "bottom-center",
+        });
+        return;
+      }
+    }
+    if (files && files[0].size < 10000000) {
+      setImageFile(files[0]);
+      console.log(files[0]);
+    } else {
+      toast("파일 사이즈가 너무 큽니다.", {
+        hideProgressBar: true,
+        autoClose: 1000,
+        type: "error",
+        position: "bottom-center",
+      });
+    }
+  };
+
+  const handleUploadFile = () => {
+    if (imageFile) {
+      const name = imageFile.name;
+      const storageRef = ref(storageService, `image/${name}`);
+      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          switch (snapshot.state) {
+            case "paused":
+              console.log("upload is paused");
+              break;
+            case "running":
+              console.log("upload is running");
+              break;
+          }
+        },
+        (error) => {
+          toast(`${error}`, {
+            hideProgressBar: true,
+            autoClose: 1000,
+            type: "warning",
+            position: "bottom-center",
+          });
+        },
+        async () => {
+          await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImageUrl(downloadURL);
+            console.log(downloadURL);
+          });
+        }
+      );
+    } else {
+      toast("파일을 찾을 수 없습니다.", {
+        hideProgressBar: true,
+        autoClose: 1000,
+        type: "warning",
+        position: "bottom-center",
+      });
+    }
   };
 
   const handleHide = (e: ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +136,16 @@ const RegStore = () => {
     const ok = window.confirm("가게 정보를 등록하시겠습니까?");
 
     if (ok) {
+      handleUploadFile();
+      if (!imageUrl) {
+        toast("이미지 업로드 중입니다. 잠시 후 다시 시도해 주세요.", {
+          hideProgressBar: true,
+          autoClose: 1000,
+          type: "info",
+          position: "bottom-center",
+        });
+        return;
+      }
       try {
         const storeObj = {
           uid: authService.currentUser?.uid,
@@ -68,6 +157,8 @@ const RegStore = () => {
           addr: address,
           hide: isHide,
           likes: 0,
+          likeUserList: [],
+          imageUrl: imageUrl,
         };
         await addDoc(collection(dbService, "mystore"), storeObj);
       } catch (error) {
@@ -78,6 +169,7 @@ const RegStore = () => {
             type: "error",
             position: "bottom-center",
           });
+          console.log(error);
         }
       }
       toast("장소 정보가 등록되었습니다.", {
@@ -97,7 +189,17 @@ const RegStore = () => {
   };
 
   const handleImageDrop = (acceptedFiles: File[]) => {
-    setImages([...images, ...acceptedFiles]);
+    if (acceptedFiles && acceptedFiles[0].size < 10000000) {
+      setImageFile(acceptedFiles[0]);
+      console.log(acceptedFiles[0]);
+    } else {
+      toast("파일 사이즈가 너무 큽니다.", {
+        hideProgressBar: true,
+        autoClose: 1000,
+        type: "warning",
+        position: "bottom-center",
+      });
+    }
   };
 
   return (
@@ -126,9 +228,22 @@ const RegStore = () => {
           <Dropzone onDrop={handleImageDrop}>
             {({ getRootProps, getInputProps }) => {
               return (
-                <div {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  <button className="selectFile">파일 선택</button>
+                <div className="fileContainer" {...getRootProps()}>
+                  <input
+                    {...getInputProps()}
+                    id="file"
+                    style={{ display: "none" }}
+                  />
+                  <input
+                    className="upload-name"
+                    value={imageFile?.name || "첨부파일"}
+                    placeholder="첨부파일"
+                    onChange={(files) => handleSelectedFile(files.target.files)}
+                    readOnly
+                  />
+                  <label className="findFile" htmlFor="file">
+                    파일찾기
+                  </label>
                 </div>
               );
             }}
@@ -157,6 +272,30 @@ const RegStore = () => {
         form {
           display: flex;
           flex-direction: column;
+        }
+        .fileContainer {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .upload-name {
+          display: inline-block;
+          width: 60%;
+          height: 2.1rem;
+          padding: 0 10px;
+          vertical-align: middle;
+          border: 1px solid #dddddd;
+          color: #999999;
+        }
+        .findFile {
+          display: inline-block;
+          width: 40%
+          height: 1.2rem;
+          margin-left: 0.5rem;
+          padding: 0.5rem 0.8rem;
+          color: #fff;
+          vertical-align: middle;
+          background-color: #999999;
         }
         .category {
           display: flex;

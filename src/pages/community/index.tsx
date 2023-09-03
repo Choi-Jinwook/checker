@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import heart from "../../public/heart.png";
-import clickedHeart from "../../public/clickedHeart.png";
-import comment from "../../public/comment.png";
-import dm from "../../public/dm.png";
-import bookmark from "../../public/bookmark.png";
-import profile from "../../public/profile.png";
+import heart from "../../../public/heart.png";
+import clickedHeart from "../../../public/clickedHeart.png";
+import comment from "../../../public/comment.png";
+import dm from "../../../public/dm.png";
+import bookmark from "../../../public/bookmark.png";
+import profile from "../../../public/profile.png";
 import Image from "next/image";
 import { useStoreData, useUserData } from "@/hooks";
 import { doc, onSnapshot } from "firebase/firestore";
@@ -183,11 +183,11 @@ export default function Community() {
           display: none;
         }
         .headerContainer {
+          width: 100%;
+          height: 5vh;
           display: flex;
           position: fixed;
           background-color: white;
-          width: 100%;
-          height: 5vh;
           z-index: 999;
           border-bottom: 1px solid black;
         }

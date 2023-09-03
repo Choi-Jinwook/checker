@@ -5,8 +5,8 @@ import { useStoreData } from "@/hooks";
 
 const ListSearch = ({ seeMine, user }: Marker) => {
   const [search, setSearch] = useState("");
-  const router = useRouter();
   const { data: dataArray } = useStoreData();
+  const router = useRouter();
 
   const handleSearchWordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -35,7 +35,7 @@ const ListSearch = ({ seeMine, user }: Marker) => {
           const info = el.storeInfo.includes(search);
           const name = storeName.includes(search);
 
-          if (isHidden) return null;
+          if (isHidden && !uidMatch) return null;
           if (seeMine && !uidMatch) return null;
           if (search !== "" && !addr && !info && !name) return null;
 

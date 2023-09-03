@@ -89,7 +89,9 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
         ) : (
           <>
             {dataArray?.map((el: any) => {
-              if (el.hide) return null;
+              if (el.hide) {
+                if (el.uid !== user?.uid) return null;
+              }
               return (
                 <EventMarkerContainer
                   key={el.id}
