@@ -12,11 +12,11 @@ export interface Coords {
 
 export interface Marker {
   seeMine: boolean;
-  user: UserObj | null | undefined;
+  uid: string | null | undefined;
 }
 
-const KakaoMap = ({ seeMine, user }: Marker) => {
-  const [myCoords, setMyCoords] = useState<Coords>({
+const KakaoMap = ({ seeMine, uid }: Marker) => {
+  const [mapCenter, setMapCenter] = useState<Coords>({
     lat: 0,
     lng: 0,
   });
@@ -25,11 +25,9 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
     lng: 0,
   });
   const [isMarkerInfoOpen, setIsMarkerInfoOpen] = useState(false);
-  const [add, setAdd] = useState(true);
   const { data: dataArray } = useStoreData();
 
   const toggleInfo = () => {
-    // static, dynamic
     setIsMarkerInfoOpen((prev) => !prev);
   };
 
@@ -38,11 +36,7 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
 
     geolocation.getCurrentPosition(
       (position) => {
-        setMyCoords({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        });
-        setClickCoords({
+        setMapCenter({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         });
@@ -50,7 +44,7 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
       (error) => {
         console.warn("Fail to fetch current location", error);
         alert("위치 정보 사용에 동의해주세요");
-        setMyCoords({
+        setMapCenter({
           lat: 37,
           lng: 127,
         });
@@ -62,7 +56,7 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
     <>
       <Map
         id="kakaoMap"
-        center={{ lat: myCoords.lat, lng: myCoords.lng }}
+        center={{ lat: mapCenter.lat, lng: mapCenter.lng }}
         style={{ width: "100%", height: "45vh", marginBottom: "0.1rem" }}
         onClick={(_t, mouseEvent) => {
           setClickCoords({
@@ -77,7 +71,7 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
           <>
             {dataArray?.map((el: any) => {
               return (
-                el.uid === user?.uid && (
+                el.uid === uid && (
                   <EventMarkerContainer
                     key={el.id}
                     data={el}
@@ -90,7 +84,7 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
           <>
             {dataArray?.map((el: any) => {
               if (el.hide) {
-                if (el.uid !== user?.uid) return null;
+                if (el.uid !== uid) return null;
               }
               return (
                 <EventMarkerContainer
@@ -103,24 +97,20 @@ const KakaoMap = ({ seeMine, user }: Marker) => {
         )}
 
         {/* Current Map Marker */}
-        {clickCoords.lat !== 0 && clickCoords.lng !== 0 && (
-          <MapMarker
-            position={{ lat: clickCoords.lat, lng: clickCoords.lng }}
-            onClick={() => {
-              setIsMarkerInfoOpen((prev) => !prev);
-              setAdd(true);
-            }}
-          >
-            {isMarkerInfoOpen && (
-              <StoreInfo
-                lat={clickCoords.lat}
-                lng={clickCoords.lng}
-                add={add}
-                toggleInfo={toggleInfo}
-              />
-            )}
-          </MapMarker>
-        )}
+        <MapMarker
+          position={{ lat: clickCoords.lat, lng: clickCoords.lng }}
+          onClick={() => {
+            setIsMarkerInfoOpen((prev) => !prev);
+          }}
+        >
+          {isMarkerInfoOpen && (
+            <StoreInfo
+              lat={clickCoords.lat}
+              lng={clickCoords.lng}
+              toggleInfo={toggleInfo}
+            />
+          )}
+        </MapMarker>
       </Map>
     </>
   );

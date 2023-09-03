@@ -30,8 +30,8 @@ export default function Main() {
   return (
     <>
       <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
-      <KakaoMap seeMine={seeMine} user={userData} />
-      {userData ? <ListSearch seeMine={seeMine} user={userData} /> : null}
+      <KakaoMap seeMine={seeMine} uid={userData?.uid} />
+      {userData ? <ListSearch seeMine={seeMine} uid={userData.uid} /> : null}
     </>
   );
 }

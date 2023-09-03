@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "react-query";
 import { fetchLikes, fetchStoreData, fetchUserData } from "../../api";
 import { UserObj } from "@/pages/home";
+import { TypeOptions, toast } from "react-toastify";
 
 export const useStoreData = () => {
   return useQuery(
@@ -33,4 +34,17 @@ export const useUserData = () => {
   return useQuery<UserObj | null>("user", fetchUserData, {
     refetchOnWindowFocus: false,
   });
+};
+
+export const useToast = () => {
+  const showToast = (message: string, type: TypeOptions | undefined) => {
+    return toast(message, {
+      hideProgressBar: true,
+      autoClose: 1000,
+      type: type,
+      position: "bottom-center",
+    });
+  };
+
+  return { showToast };
 };

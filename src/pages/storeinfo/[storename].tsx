@@ -7,7 +7,6 @@ export default function Store() {
   const router = useRouter();
   const { storename } = router.query;
   const storeInfo = dataArray?.find((obj) => obj["storeName"] === storename);
-  console.log(storeInfo);
 
   if (isLoading) return <div>Loading</div>;
   if (isError) return <div>error occured</div>;

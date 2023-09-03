@@ -7,8 +7,8 @@ import {
   storageService,
 } from "../../components/firebase/firebase";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { useToast } from "@/hooks";
 
 declare global {
   interface Window {
@@ -23,13 +23,8 @@ const RegStore = () => {
   const [imageFile, setImageFile] = useState<any>();
   const [imageUrl, setImageUrl] = useState("");
   const [isHide, setIsHide] = useState<boolean>(false);
-
+  const { showToast } = useToast();
   const router = useRouter();
-
-  const isFileTypeAllowed = (file: File) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-    return allowedTypes.includes(file.type);
-  };
 
   const onStoreNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStoreName(e.target.value);
@@ -40,27 +35,11 @@ const RegStore = () => {
   };
 
   const handleSelectedFile = (files: any) => {
-    if (!isFileTypeAllowed(files)) {
-      {
-        toast("jpeg/png/jpg 형식의 파일만 가능합니다.", {
-          hideProgressBar: true,
-          autoClose: 1000,
-          type: "error",
-          position: "bottom-center",
-        });
-        return;
-      }
-    }
     if (files && files[0].size < 10000000) {
       setImageFile(files[0]);
       console.log(files[0]);
     } else {
-      toast("파일 사이즈가 너무 큽니다.", {
-        hideProgressBar: true,
-        autoClose: 1000,
-        type: "error",
-        position: "bottom-center",
-      });
+      showToast("파일 사이즈가 너무 큽니다.", "error");
     }
   };
 
@@ -83,12 +62,7 @@ const RegStore = () => {
           }
         },
         (error) => {
-          toast(`${error}`, {
-            hideProgressBar: true,
-            autoClose: 1000,
-            type: "warning",
-            position: "bottom-center",
-          });
+          showToast(error as any, "error");
         },
         async () => {
           await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -98,12 +72,7 @@ const RegStore = () => {
         }
       );
     } else {
-      toast("파일을 찾을 수 없습니다.", {
-        hideProgressBar: true,
-        autoClose: 1000,
-        type: "warning",
-        position: "bottom-center",
-      });
+      showToast("파일을 찾을 수 없습니다.", "warning");
     }
   };
 
@@ -138,12 +107,10 @@ const RegStore = () => {
     if (ok) {
       handleUploadFile();
       if (!imageUrl) {
-        toast("이미지 업로드 중입니다. 잠시 후 다시 시도해 주세요.", {
-          hideProgressBar: true,
-          autoClose: 1000,
-          type: "info",
-          position: "bottom-center",
-        });
+        showToast(
+          "이미지 업로드 중입니다. 잠시 후 다시 시도해 주세요.",
+          "info"
+        );
         return;
       }
       try {
@@ -163,21 +130,11 @@ const RegStore = () => {
         await addDoc(collection(dbService, "mystore"), storeObj);
       } catch (error) {
         if (error instanceof Error) {
-          toast(`${error}`, {
-            hideProgressBar: true,
-            autoClose: 1000,
-            type: "error",
-            position: "bottom-center",
-          });
+          showToast(error as any, "error");
           console.log(error);
         }
       }
-      toast("장소 정보가 등록되었습니다.", {
-        hideProgressBar: true,
-        autoClose: 1000,
-        type: "success",
-        position: "bottom-center",
-      });
+      showToast("장소 정보가 등록되었습니다.", "success");
       router.push("/home");
     }
   };
@@ -186,20 +143,6 @@ const RegStore = () => {
     setStoreInfo("");
     setStoreName("");
     router.push("/home");
-  };
-
-  const handleImageDrop = (acceptedFiles: File[]) => {
-    if (acceptedFiles && acceptedFiles[0].size < 10000000) {
-      setImageFile(acceptedFiles[0]);
-      console.log(acceptedFiles[0]);
-    } else {
-      toast("파일 사이즈가 너무 큽니다.", {
-        hideProgressBar: true,
-        autoClose: 1000,
-        type: "warning",
-        position: "bottom-center",
-      });
-    }
   };
 
   return (
@@ -225,7 +168,7 @@ const RegStore = () => {
           />
         </div>
         <div>
-          <Dropzone onDrop={handleImageDrop}>
+          <Dropzone onDrop={handleSelectedFile}>
             {({ getRootProps, getInputProps }) => {
               return (
                 <div className="fileContainer" {...getRootProps()}>

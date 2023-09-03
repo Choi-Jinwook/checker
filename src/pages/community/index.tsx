@@ -29,8 +29,8 @@ export default function Community() {
   useEffect(() => {
     const initialLikes = dataArray?.map((el: any) => ({
       id: el.id,
-      likeUserList: el.likeUserList || [""],
-      likes: el.likes || 0,
+      likeUserList: el.likeUserList,
+      likes: el.likes,
     }));
     if (initialLikes) setLikes(initialLikes);
 
@@ -38,7 +38,7 @@ export default function Community() {
       const unsubscribe = onSnapshot(
         doc(dbService, "mystore", el.id),
         (snapshot) => {
-          const updatedLikesCount = snapshot.data()?.likes || 0;
+          const updatedLikesCount = snapshot.data()?.likes;
           setLikes((prevLikes) =>
             prevLikes.map((like) =>
               like.id === el.id ? { ...like, likes: updatedLikesCount } : like
@@ -54,7 +54,7 @@ export default function Community() {
   const handleClick = async (id: any) => {
     const itemToUpdate = dataArray?.find((el: any) => el.id === id);
     const isUserLikes = itemToUpdate.likeUserList.includes(userData?.uid);
-
+    // 좋아요 / 좋아요 취소
     if (itemToUpdate) {
       const updatedLikes = isUserLikes
         ? itemToUpdate.likes - 1

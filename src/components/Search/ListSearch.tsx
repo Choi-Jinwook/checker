@@ -3,7 +3,7 @@ import { Marker } from "../kakaomap/KaKaoMap";
 import { useRouter } from "next/router";
 import { useStoreData } from "@/hooks";
 
-const ListSearch = ({ seeMine, user }: Marker) => {
+const ListSearch = ({ seeMine, uid }: Marker) => {
   const [search, setSearch] = useState("");
   const { data: dataArray } = useStoreData();
   const router = useRouter();
@@ -30,7 +30,7 @@ const ListSearch = ({ seeMine, user }: Marker) => {
         {dataArray?.map((el: any) => {
           const isHidden = el.hide;
           const storeName = el.storeName;
-          const uidMatch = user?.uid === el.uid;
+          const uidMatch = uid === el.uid;
           const addr = el.addr.includes(search);
           const info = el.storeInfo.includes(search);
           const name = storeName.includes(search);

@@ -2,11 +2,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { authService } from "./firebase/firebase";
+import { authService } from "../firebase/firebase";
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/router";
-import styles from "../styles/Auth.module.css";
-import { toast } from "react-toastify";
+import styles from "../../styles/Auth.module.css";
+import { useToast } from "@/hooks";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -14,8 +14,9 @@ const Auth = () => {
   const [login, setLogin] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { showToast } = useToast();
 
-  const onAuthSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     let data;
     try {
@@ -25,35 +26,22 @@ const Auth = () => {
           email,
           password
         );
-        toast("회원가입에 성공했습니다.", {
-          hideProgressBar: true,
-          autoClose: 1000,
-          type: "success",
-          position: "bottom-center",
-        });
+        showToast("회원가입에 성공했습니다.", "success");
       } else {
         data = await signInWithEmailAndPassword(authService, email, password);
-        toast("로그인에 성공했습니다.", {
-          hideProgressBar: true,
-          autoClose: 1000,
-          type: "success",
-          position: "bottom-center",
-        });
+        showToast("로그인에 성공했습니다.", "success");
       }
       router.push("/home", undefined, { shallow: true });
     } catch (error) {
       if (error instanceof Error) {
-        setError("등록되지 않은 계정이거나 비밀번호가 틀렸습니다.");
-        // 중복회원일때 문구 추가
+        if (error.message.includes("email-already-in-use")) {
+          setError("이미 존재하는 이메일입니다.");
+        } else if (error.message.includes("wrong-password")) {
+          setError("등록되지 않은 계정이거나 비밀번호가 틀렸습니다.");
+        } else {
+          setError("예상치 못한 에러 발생");
+        }
       }
-    }
-  };
-
-  const onAuthChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.id === "email") {
-      setEmail(e.target.value);
-    } else if (e.target.id === "password") {
-      setPassword(e.target.value);
     }
   };
 
@@ -64,20 +52,20 @@ const Auth = () => {
 
   return (
     <div className={styles.container}>
-      <form className={styles.form} onSubmit={onAuthSubmit}>
+      <form className={styles.form} onSubmit={handleLogin}>
         <input
           id="email"
           className={styles.email}
           type="text"
           placeholder="Email"
-          onChange={onAuthChange}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           id="password"
           className={styles.password}
           type="password"
           placeholder="Password"
-          onChange={onAuthChange}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <input
           className={styles.authSubmit}
