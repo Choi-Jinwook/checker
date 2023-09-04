@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import heart from "../../../public/heart.png";
 import clickedHeart from "../../../public/clickedHeart.png";
 import comment from "../../../public/comment.png";
@@ -7,8 +7,6 @@ import bookmark from "../../../public/bookmark.png";
 import profile from "../../../public/profile.png";
 import Image from "next/image";
 import { useStoreData, useUserData } from "@/hooks";
-import { doc, onSnapshot } from "firebase/firestore";
-import { dbService } from "@/components/firebase/firebase";
 import { fetchLikes } from "../../../api";
 import { queryClient } from "../_app";
 
@@ -16,44 +14,21 @@ export default function Community() {
   const { data: userData } = useUserData();
   const { data: dataArray } = useStoreData();
   const [orderBy, setOrderBy] = useState<"latest" | "popularity">("latest");
-  const [likes, setLikes] = useState<
-    { id: string; likeUserList: string[]; likes: number }[]
-  >([{ id: "", likeUserList: [""], likes: 0 }]);
-
-  if (orderBy === "latest") {
-    dataArray?.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp);
-  } else if (orderBy === "popularity") {
-    dataArray?.sort((a, b) => b.likeUserList.length - a.likeUserList.length);
-  }
-
-  useEffect(() => {
-    const initialLikes = dataArray?.map((el: any) => ({
+  const likesData = useMemo(() => {
+    if (!dataArray) return [];
+    return dataArray.map((el: any) => ({
       id: el.id,
       likeUserList: el.likeUserList,
       likes: el.likes,
     }));
-    if (initialLikes) setLikes(initialLikes);
-
-    dataArray?.forEach((el: any) => {
-      const unsubscribe = onSnapshot(
-        doc(dbService, "mystore", el.id),
-        (snapshot) => {
-          const updatedLikesCount = snapshot.data()?.likes;
-          setLikes((prevLikes) =>
-            prevLikes.map((like) =>
-              like.id === el.id ? { ...like, likes: updatedLikesCount } : like
-            )
-          );
-        }
-      );
-
-      return () => unsubscribe();
-    });
   }, [dataArray]);
+  const [likes, setLikes] = useState(likesData);
 
   const handleClick = async (id: any) => {
     const itemToUpdate = dataArray?.find((el: any) => el.id === id);
     const isUserLikes = itemToUpdate.likeUserList.includes(userData?.uid);
+    console.log(itemToUpdate, Date());
+
     // 좋아요 / 좋아요 취소
     if (itemToUpdate) {
       const updatedLikes = isUserLikes
@@ -86,10 +61,30 @@ export default function Community() {
       });
 
       if (newDataArray) setLikes(newDataArray);
-      await fetchLikes(id, updatedLikeUsers, updatedLikes);
-      queryClient.invalidateQueries("data");
+
+      try {
+        await fetchLikes(id, updatedLikeUsers, updatedLikes);
+        queryClient.invalidateQueries("data");
+      } catch (error) {
+        console.error("Firestore update failed:", error);
+      }
     }
   };
+
+  const sortedDataArray = useMemo(() => {
+    if (dataArray) {
+      if (orderBy === "latest") {
+        return [...dataArray].sort(
+          (a, b) => b.combinedTimestamp - a.combinedTimestamp
+        );
+      } else if (orderBy === "popularity") {
+        return [...dataArray].sort(
+          (a, b) => b.likeUserList.length - a.likeUserList.length
+        );
+      }
+    }
+    return dataArray;
+  }, [dataArray, orderBy]);
 
   /*
     DM 기능 추가
@@ -112,8 +107,8 @@ export default function Community() {
             </div>
           </div>
         </div>
-        {dataArray ? (
-          dataArray?.map((el: any) => {
+        {sortedDataArray ? (
+          sortedDataArray.map((el: any) => {
             if (el.hide === true) return null;
 
             return (
@@ -124,7 +119,20 @@ export default function Community() {
                   </div>
                   <div className="item userName">{el.creatorName}</div>
                   <div className="item storeName">{el.storeName}</div>
-                  <div className="item photo">photo</div>
+                  {el.imageUrl ? (
+                    <div
+                      className="item photo"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        backgroundImage: `url(${el.imageUrl})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  ) : (
+                    <div className="item photo">photo</div>
+                  )}
                   <div className="item likesButton">
                     {el.likeUserList?.includes(userData?.uid) ? (
                       <Image
