@@ -9,11 +9,21 @@ import Image from "next/image";
 import { useStoreData, useUserData } from "@/hooks";
 import { fetchLikes } from "../../../api";
 import { queryClient } from "../_app";
+import CommentModal from "@/components/modal/CommentModal";
 
 export default function Community() {
   const { data: userData } = useUserData();
   const { data: dataArray } = useStoreData();
   const [orderBy, setOrderBy] = useState<"latest" | "popularity">("latest");
+  const [commentBox, setCommentBox] = useState<
+    { id: string; isOpen: boolean; comments: string[] }[]
+  >([
+    {
+      id: "",
+      isOpen: false,
+      comments: [""],
+    },
+  ]);
   const likesData = useMemo(() => {
     if (!dataArray) return [];
     return dataArray.map((el: any) => ({
