@@ -1,5 +1,5 @@
-import Link from "next/link";
-import styles from "@shared/styles/Index.module.css";
+import Link from 'next/link'
+import styles from '@shared/styles/Index.module.css'
 
 export default function Main() {
   return (
@@ -10,5 +10,5 @@ export default function Main() {
         <button className={styles.button}>시작하기▶</button>
       </Link>
     </div>
-  );
+  )
 }

@@ -1,15 +1,15 @@
-import { useStoreData } from "@shared/hooks";
-import Image from "next/image";
-import { useRouter } from "next/router";
+import { useStoreData } from '@shared/hooks'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 export default function Store() {
-  const { data: dataArray, isLoading, isError } = useStoreData();
-  const router = useRouter();
-  const { storename } = router.query;
-  const storeInfo = dataArray?.find((obj) => obj["storeName"] === storename);
+  const { data: dataArray, isLoading, isError } = useStoreData()
+  const router = useRouter()
+  const { storename } = router.query
+  const storeInfo = dataArray?.find((obj) => obj['storeName'] === storename)
 
-  if (isLoading) return <div>Loading</div>;
-  if (isError) return <div>error occured</div>;
+  if (isLoading) return <div>Loading</div>
+  if (isError) return <div>error occured</div>
 
   return (
     <>
@@ -102,5 +102,5 @@ export default function Store() {
         </div>
       )}
     </>
-  );
+  )
 }

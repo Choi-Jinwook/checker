@@ -1,22 +1,22 @@
-import Image from "next/image";
-import { useRouter } from "next/router";
-import profile from "@public/profile.png";
-import list from "@public/list.png";
-import bookmark from "@public/bookmark.png";
-import Link from "next/link";
-import { useUserData } from "@shared/hooks";
-import { authService } from "@shared/firebase";
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import profile from '@public/profile.png'
+import list from '@public/list.png'
+import bookmark from '@public/bookmark.png'
+import Link from 'next/link'
+import { useUserData } from '@shared/hooks'
+import { authService } from '@shared/firebase'
 
 export default function Profile() {
-  const { data: userData } = useUserData();
-  const router = useRouter();
+  const { data: userData } = useUserData()
+  const router = useRouter()
   const handleLogout = () => {
-    const answer = confirm("로그아웃 하시겠습니까?");
+    const answer = confirm('로그아웃 하시겠습니까?')
     if (answer) {
-      authService.signOut();
-      router.push("/login");
+      authService.signOut()
+      router.push('/login')
     }
-  };
+  }
 
   return (
     <>
@@ -39,11 +39,11 @@ export default function Profile() {
           <div className="myLikeList">
             <Link
               style={{
-                display: "flex",
-                gap: "1rem",
-                color: "black",
-                textDecoration: "none",
-                alignItems: "center",
+                display: 'flex',
+                gap: '1rem',
+                color: 'black',
+                textDecoration: 'none',
+                alignItems: 'center'
               }}
               href="/profile/mylikelist"
             >
@@ -60,11 +60,11 @@ export default function Profile() {
           <div className="myBookmarkList">
             <Link
               style={{
-                display: "flex",
-                gap: "1rem",
-                color: "black",
-                textDecoration: "none",
-                alignItems: "center",
+                display: 'flex',
+                gap: '1rem',
+                color: 'black',
+                textDecoration: 'none',
+                alignItems: 'center'
               }}
               href="/profile/mybookmark"
             >
@@ -160,5 +160,5 @@ export default function Profile() {
         `}</style>
       </div>
     </>
-  );
+  )
 }

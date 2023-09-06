@@ -1,8 +1,8 @@
-import Image from "next/image";
+import Image from 'next/image'
 
 interface SeeMine {
-  seeMine: boolean;
-  toggleSeeMine: () => void;
+  seeMine: boolean
+  toggleSeeMine: () => void
 }
 
 const MainHeader = ({ seeMine, toggleSeeMine }: SeeMine) => {
@@ -11,8 +11,8 @@ const MainHeader = ({ seeMine, toggleSeeMine }: SeeMine) => {
       <button
         className="navButton Left"
         onClick={() => {
-          if (seeMine) return;
-          toggleSeeMine();
+          if (seeMine) return
+          toggleSeeMine()
         }}
       >
         내 것만 보기
@@ -20,8 +20,8 @@ const MainHeader = ({ seeMine, toggleSeeMine }: SeeMine) => {
       <button
         className="navButton Right"
         onClick={() => {
-          if (!seeMine) return;
-          toggleSeeMine();
+          if (!seeMine) return
+          toggleSeeMine()
         }}
       >
         전체보기
@@ -29,7 +29,7 @@ const MainHeader = ({ seeMine, toggleSeeMine }: SeeMine) => {
       <button
         className="refreshButton"
         onClick={() => {
-          location.reload();
+          location.reload()
         }}
       >
         <Image src="/reload.jpeg" alt="reload" width={30} height={30} />
@@ -58,7 +58,7 @@ const MainHeader = ({ seeMine, toggleSeeMine }: SeeMine) => {
         }
       `}</style>
     </div>
-  );
-};
+  )
+}
 
-export default MainHeader;
+export default MainHeader

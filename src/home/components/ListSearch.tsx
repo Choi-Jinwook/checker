@@ -1,20 +1,20 @@
-import { ChangeEvent, useState } from "react";
-import { useRouter } from "next/router";
-import { useStoreData } from "@shared/hooks";
-import { Marker } from "@shared/types";
+import { ChangeEvent, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useStoreData } from '@shared/hooks'
+import { Marker } from '@shared/types'
 
 const ListSearch = ({ seeMine, uid }: Marker) => {
-  const [search, setSearch] = useState("");
-  const { data: dataArray } = useStoreData();
-  const router = useRouter();
+  const [search, setSearch] = useState('')
+  const { data: dataArray } = useStoreData()
+  const router = useRouter()
 
   const handleSearchWordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-  };
+    setSearch(e.target.value)
+  }
 
   const handleRouting = (storename: string) => {
-    router.push(`/storeinfo/${storename}`);
-  };
+    router.push(`/storeinfo/${storename}`)
+  }
 
   return (
     <>
@@ -28,16 +28,16 @@ const ListSearch = ({ seeMine, uid }: Marker) => {
       </div>
       <div className="listContainer">
         {dataArray?.map((el: any) => {
-          const isHidden = el.hide;
-          const storeName = el.storeName;
-          const uidMatch = uid === el.uid;
-          const addr = el.addr.includes(search);
-          const info = el.storeInfo.includes(search);
-          const name = storeName.includes(search);
+          const isHidden = el.hide
+          const storeName = el.storeName
+          const uidMatch = uid === el.uid
+          const addr = el.addr.includes(search)
+          const info = el.storeInfo.includes(search)
+          const name = storeName.includes(search)
 
-          if (isHidden && !uidMatch) return null;
-          if (seeMine && !uidMatch) return null;
-          if (search !== "" && !addr && !info && !name) return null;
+          if (isHidden && !uidMatch) return null
+          if (seeMine && !uidMatch) return null
+          if (search !== '' && !addr && !info && !name) return null
 
           return (
             <div
@@ -47,7 +47,7 @@ const ListSearch = ({ seeMine, uid }: Marker) => {
             >
               {storeName}
             </div>
-          );
+          )
         })}
       </div>
       <style jsx>{`
@@ -85,7 +85,7 @@ const ListSearch = ({ seeMine, uid }: Marker) => {
         }
       `}</style>
     </>
-  );
-};
+  )
+}
 
-export default ListSearch;
+export default ListSearch

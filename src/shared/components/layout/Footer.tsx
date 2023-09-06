@@ -1,12 +1,12 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ReactNode } from "react";
-import home from "@public/home.png";
-import community from "@public/community.png";
-import profile from "@public/profile.png";
+import Image from 'next/image'
+import Link from 'next/link'
+import { ReactNode } from 'react'
+import home from '@public/home.png'
+import community from '@public/community.png'
+import profile from '@public/profile.png'
 
 interface MyComponentProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 const Footer = ({ children }: MyComponentProps) => {
@@ -55,7 +55,7 @@ const Footer = ({ children }: MyComponentProps) => {
         }
       `}</style>
     </>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

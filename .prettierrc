@@ -1,0 +1,19 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "importOrder": [
+    ".s?css$",
+    ".styled$",
+    "^@emotion",
+    "^[react|next]",
+    "^next",
+    "<THIRD_PARTY_MODULES>",
+    "^@shared",
+    "^@[mypage|search|home]",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "importOrderCaseInsensitive": true
+}

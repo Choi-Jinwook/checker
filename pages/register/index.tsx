@@ -1,113 +1,110 @@
-import { addDoc, collection } from "firebase/firestore";
-import { ChangeEvent, useEffect, useState } from "react";
-import Dropzone from "react-dropzone";
-import { useRouter } from "next/router";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { useToast } from "@shared/hooks";
-import { authService, dbService, storageService } from "@shared/firebase";
+import { addDoc, collection } from 'firebase/firestore'
+import { ChangeEvent, useEffect, useState } from 'react'
+import Dropzone from 'react-dropzone'
+import { useRouter } from 'next/router'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+import { useToast } from '@shared/hooks'
+import { authService, dbService, storageService } from '@shared/firebase'
 
 declare global {
   interface Window {
-    kakao: any;
+    kakao: any
   }
 }
 
 const RegStore = () => {
-  const [storeName, setStoreName] = useState<string>("");
-  const [storeInfo, setStoreInfo] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [imageFile, setImageFile] = useState<any>();
-  const [imageUrl, setImageUrl] = useState("");
-  const [isHide, setIsHide] = useState<boolean>(false);
-  const { showToast } = useToast();
-  const router = useRouter();
+  const [storeName, setStoreName] = useState<string>('')
+  const [storeInfo, setStoreInfo] = useState<string>('')
+  const [address, setAddress] = useState<string>('')
+  const [imageFile, setImageFile] = useState<any>()
+  const [imageUrl, setImageUrl] = useState('')
+  const [isHide, setIsHide] = useState<boolean>(false)
+  const { showToast } = useToast()
+  const router = useRouter()
 
   const onStoreNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setStoreName(e.target.value);
-  };
+    setStoreName(e.target.value)
+  }
 
   const onStoreInfoChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setStoreInfo(e.target.value);
-  };
+    setStoreInfo(e.target.value)
+  }
 
   const handleSelectedFile = (files: any) => {
     if (files && files[0].size < 10000000) {
-      setImageFile(files[0]);
-      console.log(files[0]);
+      setImageFile(files[0])
+      console.log(files[0])
     } else {
-      showToast("파일 사이즈가 너무 큽니다.", "error");
+      showToast('파일 사이즈가 너무 큽니다.', 'error')
     }
-  };
+  }
 
   const handleUploadFile = () => {
     if (imageFile) {
-      const name = imageFile.name;
-      const storageRef = ref(storageService, `image/${name}`);
-      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+      const name = imageFile.name
+      const storageRef = ref(storageService, `image/${name}`)
+      const uploadTask = uploadBytesResumable(storageRef, imageFile)
 
       uploadTask.on(
-        "state_changed",
+        'state_changed',
         (snapshot) => {
           switch (snapshot.state) {
-            case "paused":
-              console.log("upload is paused");
-              break;
-            case "running":
-              console.log("upload is running");
-              break;
+            case 'paused':
+              console.log('upload is paused')
+              break
+            case 'running':
+              console.log('upload is running')
+              break
           }
         },
         (error) => {
-          showToast(error as any, "error");
+          showToast(error as any, 'error')
         },
         async () => {
           await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUrl(downloadURL);
-            console.log(downloadURL);
-          });
+            setImageUrl(downloadURL)
+            console.log(downloadURL)
+          })
         }
-      );
+      )
     } else {
-      showToast("파일을 찾을 수 없습니다.", "warning");
+      showToast('파일을 찾을 수 없습니다.', 'warning')
     }
-  };
+  }
 
   const handleHide = (e: ChangeEvent<HTMLInputElement>) => {
-    setIsHide(e.target.checked);
-  };
+    setIsHide(e.target.checked)
+  }
 
   useEffect(() => {
     const onLoadKakaoMap = () => {
       window.kakao.maps.load(() => {
-        const geocoder = new window.kakao.maps.services.Geocoder();
+        const geocoder = new window.kakao.maps.services.Geocoder()
         geocoder.coord2Address(
           router.query.lng,
           router.query.lat,
           (result: any) => {
-            setAddress(result[0].address.address_name);
-            console.log(result);
+            setAddress(result[0].address.address_name)
+            console.log(result)
           }
-        );
-      });
-    };
+        )
+      })
+    }
 
-    onLoadKakaoMap();
+    onLoadKakaoMap()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   const onSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const ok = window.confirm("가게 정보를 등록하시겠습니까?");
+    const ok = window.confirm('가게 정보를 등록하시겠습니까?')
 
     if (ok) {
-      handleUploadFile();
+      handleUploadFile()
       if (!imageUrl) {
-        showToast(
-          "이미지 업로드 중입니다. 잠시 후 다시 시도해 주세요.",
-          "info"
-        );
-        return;
+        showToast('이미지 업로드 중입니다. 잠시 후 다시 시도해 주세요.', 'info')
+        return
       }
       try {
         const storeObj = {
@@ -122,25 +119,25 @@ const RegStore = () => {
           likes: 0,
           likeUserList: [],
           imageUrl: imageUrl,
-          comments: [],
-        };
-        await addDoc(collection(dbService, "mystore"), storeObj);
+          comments: []
+        }
+        await addDoc(collection(dbService, 'mystore'), storeObj)
       } catch (error) {
         if (error instanceof Error) {
-          showToast(error as any, "error");
-          console.log(error);
+          showToast(error as any, 'error')
+          console.log(error)
         }
       }
-      showToast("장소 정보가 등록되었습니다.", "success");
-      router.push("/home");
+      showToast('장소 정보가 등록되었습니다.', 'success')
+      router.push('/home')
     }
-  };
+  }
 
   const handleCancel = () => {
-    setStoreInfo("");
-    setStoreName("");
-    router.push("/home");
-  };
+    setStoreInfo('')
+    setStoreName('')
+    router.push('/home')
+  }
 
   return (
     <>
@@ -172,11 +169,11 @@ const RegStore = () => {
                   <input
                     {...getInputProps()}
                     id="file"
-                    style={{ display: "none" }}
+                    style={{ display: 'none' }}
                   />
                   <input
                     className="upload-name"
-                    value={imageFile?.name || "첨부파일"}
+                    value={imageFile?.name || '첨부파일'}
                     placeholder="첨부파일"
                     onChange={(files) => handleSelectedFile(files.target.files)}
                     readOnly
@@ -185,7 +182,7 @@ const RegStore = () => {
                     파일찾기
                   </label>
                 </div>
-              );
+              )
             }}
           </Dropzone>
         </div>
@@ -306,7 +303,7 @@ const RegStore = () => {
         }
       `}</style>
     </>
-  );
-};
+  )
+}
 
-export default RegStore;
+export default RegStore

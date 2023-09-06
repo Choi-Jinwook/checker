@@ -1,10 +1,10 @@
-import { useStoreData, useUserData } from "@shared/hooks";
-import Link from "next/link";
-import React from "react";
+import { useStoreData, useUserData } from '@shared/hooks'
+import Link from 'next/link'
+import React from 'react'
 
 export default function MyLikeList() {
-  const { data: userData } = useUserData();
-  const { data: dataArray } = useStoreData();
+  const { data: userData } = useUserData()
+  const { data: dataArray } = useStoreData()
 
   return (
     <div className="container">
@@ -24,9 +24,9 @@ export default function MyLikeList() {
                 <div className="creatorName">등록: {el.creatorName}</div>
               </div>
             </React.Fragment>
-          );
+          )
         }
-        return null;
+        return null
       })}
       <style jsx>{`
         .container {
@@ -87,5 +87,5 @@ export default function MyLikeList() {
         }
       `}</style>
     </div>
-  );
+  )
 }

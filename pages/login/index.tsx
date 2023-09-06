@@ -1,7 +1,7 @@
-import Auth from "@auth/Auth";
+import Auth from '@auth/Auth'
 
 const Login = () => {
-  return <Auth />;
-};
+  return <Auth />
+}
 
-export default Login;
+export default Login
