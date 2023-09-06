@@ -14,8 +14,15 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "jsxImportSource": "@emotion/react",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/*"]
+      "@pages/*": ["../pages/*"],
+      "@auth/*": ["auth/*"],
+      "@community/*": ["community/*"],
+      "@home/*": ["home/*"],
+      "@shared/*": ["shared/*"],
+      "@public/*": ["../public/*"]
     },
     "types": ["kakao.maps.d.ts"]
   },
