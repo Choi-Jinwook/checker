@@ -1,3 +1,4 @@
+import React from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import profile from '@public/profile.png'
@@ -6,24 +7,23 @@ import bookmark from '@public/bookmark.png'
 import Link from 'next/link'
 import { useUserData } from '@shared/hooks'
 import { authService } from '@shared/firebase'
+import { Header } from '@shared/components/layout'
 
 export default function Profile() {
   const { data: userData } = useUserData()
-  const router = useRouter()
+  const { push } = useRouter()
   const handleLogout = () => {
     const answer = confirm('로그아웃 하시겠습니까?')
     if (answer) {
       authService.signOut()
-      router.push('/login')
+      push('/login')
     }
   }
 
   return (
     <>
       <div className="container">
-        <div className="headerContainer">
-          <div className="header">프로필</div>
-        </div>
+        <Header text="마이페이지" />
         <div className="nicknameContainer">
           <div className="item profileImage">
             <Image src={profile} alt="profile" width={100} height={100} />

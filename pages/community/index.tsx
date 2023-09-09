@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import heart from '@public/heart.png'
 import clickedHeart from '@public/clickedHeart.png'
 import comment from '@public/comment.png'
@@ -10,6 +10,7 @@ import { useStoreData, useUserData } from '@shared/hooks'
 import { CommentBox } from '@community/components'
 import { queryClient } from '@pages/_app'
 import { fetchLikes } from '@shared/apis'
+import { Header } from '@shared/components/layout'
 
 export default function Community() {
   const { data: userData } = useUserData()
@@ -26,6 +27,13 @@ export default function Community() {
     }))
   }, [dataArray])
   const [likes, setLikes] = useState(likesData)
+
+  const handleOrder = useCallback(
+    (order: 'latest' | 'popularity') => {
+      setOrderBy(order)
+    },
+    [setOrderBy]
+  )
 
   const onClose = () => {
     setIsOpen(false)
@@ -103,7 +111,8 @@ export default function Community() {
   return (
     <>
       <div className="container">
-        <div className="headerContainer">
+        <Header text="커뮤니티" handleOrder={handleOrder} />
+        {/* <div className="headerContainer">
           <div className="header">커뮤니티</div>
           <div className="orderByContainer">
             <div className="option1" onClick={() => setOrderBy('latest')}>
@@ -113,7 +122,7 @@ export default function Community() {
               인기순
             </div>
           </div>
-        </div>
+        </div> */}
         {sortedDataArray ? (
           sortedDataArray.map((el: any) => {
             if (el.hide === true) return null
@@ -232,21 +241,6 @@ export default function Community() {
           font-size: 1.5rem;
           padding-left: 1rem;
           align-items: center;
-        }
-        .orderByContainer {
-          display: flex;
-          flex-direction: row;
-          width: 40vw;
-          align-items: center;
-          justify-content: center;
-        }
-        .option1 {
-          background-color: white;
-          width: 100%;
-        }
-        .option2 {
-          background-color: white;
-          width: 100%;
         }
         .contentContainer {
           display: grid;

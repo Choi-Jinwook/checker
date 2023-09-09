@@ -1,6 +1,8 @@
+import React from 'react'
 import { useStoreData } from '@shared/hooks'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { Header } from '@shared/components/layout'
 
 export default function Store() {
   const { data: dataArray, isLoading, isError } = useStoreData()
@@ -15,9 +17,7 @@ export default function Store() {
     <>
       {storeInfo && (
         <div className="container">
-          <div className="header">
-            <div className="storeName">{storename}</div>
-          </div>
+          <Header text={storename as string} />
           <div className="photoContainer">
             {storeInfo?.imageUrl ? (
               <Image

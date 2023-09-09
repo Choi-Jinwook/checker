@@ -9,7 +9,7 @@ export default function EventMarkerContainer({
   handleClickedMarker
 }: any) {
   const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
+  const { push } = useRouter()
 
   return (
     <MapMarker
@@ -50,7 +50,7 @@ export default function EventMarkerContainer({
           <div
             className="storeName storeInfo"
             onClick={() => {
-              router.push(`/storeinfo/${data.storeName}`)
+              push(`/storeinfo/${data.storeName}`)
             }}
           >
             {data.storeName}

@@ -2,28 +2,30 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from 'firebase/auth'
-import { ChangeEvent, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import styles from '@shared/styles/Auth.module.css'
-import { signIn, signOut, useSession } from 'next-auth/react'
 import { authService } from '@shared/firebase'
 import { useToast } from '@shared/hooks'
+import styled from '@emotion/styled'
+import { color } from '@shared/constants'
+import { Button, ControlledInput, Form } from '@shared/components'
+import { FormContentProps } from '@shared/types'
 
 export default function Auth() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [login, setLogin] = useState(true)
   const [error, setError] = useState('')
   const { push } = useRouter()
   const { showToast } = useToast()
 
-  const { data: session, status } = useSession()
-  useEffect(() => {
-    console.log(session, status)
-  }, [session, status])
+  const toggleLogin2Signup = () => {
+    setLogin((prev) => !prev)
+    setError('')
+  }
 
-  const handleLogin = async (e: ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmit = async ({
+    content1: email,
+    content2: password
+  }: FormContentProps): Promise<void> => {
     let data
     try {
       if (!login) {
@@ -37,12 +39,16 @@ export default function Auth() {
         data = await signInWithEmailAndPassword(authService, email, password)
         showToast('로그인에 성공했습니다.', 'success')
       }
-      push('/home', undefined, { shallow: true })
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message.includes('email-already-in-use')) {
+      push('/home')
+    } catch (error: any) {
+      const message = error.message
+      if (error) {
+        if (message.includes('email-already-in-use')) {
           setError('이미 존재하는 이메일입니다.')
-        } else if (error.message.includes('wrong-password')) {
+        } else if (
+          message.includes('wrong-password') ||
+          message.includes('user-not-found')
+        ) {
           setError('등록되지 않은 계정이거나 비밀번호가 틀렸습니다.')
         } else {
           setError('예상치 못한 에러 발생')
@@ -51,67 +57,84 @@ export default function Auth() {
     }
   }
 
-  const toggleLoginSignup = () => {
-    setLogin((prev) => !prev)
-    setError('')
-  }
-
   return (
-    <div className={styles.container}>
-      <form className={styles.form} onSubmit={handleLogin}>
-        <input
-          id="email"
-          className={styles.email}
-          type="text"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          id="password"
-          className={styles.password}
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          className={styles.authSubmit}
-          type="submit"
-          value={login ? '로그인' : '회원가입'}
-        />
-      </form>
-      <span className={styles.convert} onClick={toggleLoginSignup}>
-        {login ? '회원가입으로 전환' : '로그인으로 전환'}
-      </span>
-      <span className={styles.errorMsg}>{error}</span>
-      <br />
-      <div>* 로그인 후 지도가 보이지 않으면 새로고침을 해주세요!</div>
-      <div>
-        {!session && (
-          <ul>
-            <li>
-              <a
-                href={'/api/auth/signin'}
-                onClick={(e) => {
-                  e.preventDefault()
-                  signIn('google')
-                }}
-              >
-                google
-              </a>
-            </li>
-          </ul>
+    <Container>
+      <LoginForm onSubmit={handleSubmit}>
+        {({
+          handleFirstContent: handleEmail,
+          handleSecondContent: handlePassword,
+          onSubmit
+        }) => (
+          <>
+            <Input
+              kind="secondary"
+              placeholder="Email"
+              onChange={handleEmail}
+            />
+            <Input
+              type="password"
+              kind="secondary"
+              placeholder="Password"
+              onChange={handlePassword}
+            />
+
+            <Button
+              kind="primary"
+              shape="semi-round"
+              borderColor="#1a73e8"
+              backgroundColor="#1a73e8"
+              onClick={onSubmit}
+            >
+              {login ? '로그인' : '회원가입'}
+            </Button>
+          </>
         )}
-        <li>
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              signOut()
-            }}
-          >
-            so
-          </button>
-        </li>
-      </div>
-    </div>
+      </LoginForm>
+      <DivContainer>
+        <Converter onClick={toggleLogin2Signup}>
+          {login ? '회원가입하기' : '로그인하기'}
+        </Converter>
+        <Error>{error}</Error>
+        <SDiv>*로그인 후 지도가 보이지 않으면 새로고침을 해주세요!</SDiv>
+      </DivContainer>
+    </Container>
   )
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+`
+
+const LoginForm = styled(Form)``
+
+const Input = styled(ControlledInput)`
+  display: block;
+  margin: 0 auto;
+  padding-left: 10px;
+  width: 50vw;
+  height: 2rem;
+  text-align: left;
+`
+
+const DivContainer = styled.div`
+  position: relative;
+  top: 10px;
+  text-align: center;
+`
+
+const Converter = styled.div`
+  color: ${color.gray05};
+`
+
+const Error = styled.div`
+  color: ${color.red05};
+`
+
+const SDiv = styled.div`
+  color: ${color.black};
+`

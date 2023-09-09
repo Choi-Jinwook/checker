@@ -1,3 +1,4 @@
+import React from 'react'
 import { ChangeEvent, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useStoreData } from '@shared/hooks'
@@ -6,14 +7,14 @@ import { Marker } from '@shared/types'
 const ListSearch = ({ seeMine, uid }: Marker) => {
   const [search, setSearch] = useState('')
   const { data: dataArray } = useStoreData()
-  const router = useRouter()
+  const { push } = useRouter()
 
   const handleSearchWordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
   }
 
   const handleRouting = (storename: string) => {
-    router.push(`/storeinfo/${storename}`)
+    push(`/storeinfo/${storename}`)
   }
 
   return (

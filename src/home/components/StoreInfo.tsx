@@ -21,10 +21,10 @@ const StoreInfo = ({ lat, lng, toggleInfo }: Coords) => {
       <Link
         legacyBehavior
         href={{
-          pathname: '/register/store',
+          pathname: '/register',
           query: { lat: lat, lng: lng }
         }}
-        as="/register/store"
+        as="/register"
       >
         <a
           style={{

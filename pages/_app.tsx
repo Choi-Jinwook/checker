@@ -1,11 +1,12 @@
+import React from 'react'
 import { Footer } from '@shared/components/layout'
 import '@shared/styles/globals.css'
-import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { SessionProvider } from 'next-auth/react'
+import { AppProps } from 'next/app'
 
 export const queryClient = new QueryClient()
 

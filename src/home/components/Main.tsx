@@ -1,8 +1,9 @@
+import React from 'react'
 import { useUserData } from '@shared/hooks'
 import { useState } from 'react'
 import KakaoMap from './KaKaoMap'
 import ListSearch from './ListSearch'
-import { MainHeader } from '@shared/components/layout'
+import { HomeHeader } from '@shared/components/layout'
 
 export default function Main() {
   const [seeMine, setSeeMine] = useState<boolean>(true)
@@ -17,7 +18,7 @@ export default function Main() {
 
   return (
     <>
-      <MainHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
+      <HomeHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
       <KakaoMap seeMine={seeMine} uid={userData?.uid} />
       {userData ? <ListSearch seeMine={seeMine} uid={userData.uid} /> : null}
     </>

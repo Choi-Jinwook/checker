@@ -1,10 +1,21 @@
+import React, { useCallback } from 'react'
 import { addDoc, collection } from 'firebase/firestore'
-import { ChangeEvent, useEffect, useState } from 'react'
-import Dropzone from 'react-dropzone'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { useToast } from '@shared/hooks'
 import { authService, dbService, storageService } from '@shared/firebase'
+import styled from '@emotion/styled'
+import {
+  Button,
+  ControlledInput,
+  Form,
+  Label,
+  TextArea
+} from '@shared/components'
+import { FormContentProps } from '@shared/types'
+import { color } from '@shared/constants'
+import { ImageDrop } from '@community/components'
 
 declare global {
   interface Window {
@@ -13,8 +24,6 @@ declare global {
 }
 
 const RegStore = () => {
-  const [storeName, setStoreName] = useState<string>('')
-  const [storeInfo, setStoreInfo] = useState<string>('')
   const [address, setAddress] = useState<string>('')
   const [imageFile, setImageFile] = useState<any>()
   const [imageUrl, setImageUrl] = useState('')
@@ -22,22 +31,17 @@ const RegStore = () => {
   const { showToast } = useToast()
   const router = useRouter()
 
-  const onStoreNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setStoreName(e.target.value)
-  }
-
-  const onStoreInfoChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setStoreInfo(e.target.value)
-  }
-
-  const handleSelectedFile = (files: any) => {
-    if (files && files[0].size < 10000000) {
-      setImageFile(files[0])
-      console.log(files[0])
-    } else {
-      showToast('파일 사이즈가 너무 큽니다.', 'error')
-    }
-  }
+  const handleSelectedFile = useCallback(
+    (files: any) => {
+      if (files && files[0].size < 10000000) {
+        setImageFile(files[0])
+        console.log(files[0])
+      } else {
+        showToast('파일 사이즈가 너무 큽니다.', 'error')
+      }
+    },
+    [setImageFile, showToast]
+  )
 
   const handleUploadFile = () => {
     if (imageFile) {
@@ -72,10 +76,6 @@ const RegStore = () => {
     }
   }
 
-  const handleHide = (e: ChangeEvent<HTMLInputElement>) => {
-    setIsHide(e.target.checked)
-  }
-
   useEffect(() => {
     const onLoadKakaoMap = () => {
       window.kakao.maps.load(() => {
@@ -95,10 +95,15 @@ const RegStore = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleCancel = () => {
+    router.push('/home')
+  }
 
-    const ok = window.confirm('가게 정보를 등록하시겠습니까?')
+  const handleSubmit = async ({
+    content1: title,
+    content2: body
+  }: FormContentProps): Promise<void> => {
+    const ok = window.confirm('장소 정보를 등록하시겠습니까?')
 
     if (ok) {
       handleUploadFile()
@@ -110,8 +115,8 @@ const RegStore = () => {
         const storeObj = {
           uid: authService.currentUser?.uid,
           creatorName: authService.currentUser?.displayName,
-          storeName: storeName.toLowerCase(),
-          storeInfo: storeInfo,
+          storeName: title.toLowerCase(),
+          storeInfo: body,
           lat: router.query.lat,
           lng: router.query.lng,
           addr: address,
@@ -133,177 +138,95 @@ const RegStore = () => {
     }
   }
 
-  const handleCancel = () => {
-    setStoreInfo('')
-    setStoreName('')
-    router.push('/home')
-  }
-
   return (
-    <>
-      <form onSubmit={onSubmit}>
-        <div className="category">스크롤형 카테고리(추후 업데이트 예정)</div>
-        <div className="storeNameContainer">
-          <input
-            className="storeName"
-            type="text"
-            placeholder="장소 이름"
-            onChange={onStoreNameChange}
-            required
+    <Form id="cancel" onSubmit={handleSubmit}>
+      {({
+        value,
+        handleFirstContent: handleTitle,
+        handleSecondContent: handleBody,
+        onSubmit
+      }) => (
+        <>
+          <TitleInput
+            kind="tertiary"
+            shape="basic"
+            placeholder="기록하고 싶은 장소명을 입력해주세요."
+            value={value?.content1}
+            onChange={handleTitle}
           />
-        </div>
-        <div className="storeInfoContainer">
-          <textarea
-            className="storeInfo"
-            value={storeInfo}
-            onChange={onStoreInfoChange}
-            placeholder="설명을 적어주세요"
-            required
+          <STextArea
+            value={value?.content2}
+            placeholder="설명을 입력해주세요."
+            onChange={handleBody}
           />
-        </div>
-        <div>
-          <Dropzone onDrop={handleSelectedFile}>
-            {({ getRootProps, getInputProps }) => {
-              return (
-                <div className="fileContainer" {...getRootProps()}>
-                  <input
-                    {...getInputProps()}
-                    id="file"
-                    style={{ display: 'none' }}
-                  />
-                  <input
-                    className="upload-name"
-                    value={imageFile?.name || '첨부파일'}
-                    placeholder="첨부파일"
-                    onChange={(files) => handleSelectedFile(files.target.files)}
-                    readOnly
-                  />
-                  <label className="findFile" htmlFor="file">
-                    파일찾기
-                  </label>
-                </div>
-              )
-            }}
-          </Dropzone>
-        </div>
-        <div className="labelContainer">
-          <input
-            id="hide"
-            type="checkbox"
-            checked={isHide}
-            onChange={handleHide}
-          />
-          <label htmlFor="hide">나만 보기</label>
-        </div>
-        <div className="buttonContainer">
-          <input className="submit Button" type="submit" value="등록" />
-          <input
-            className="cancle Button"
-            type="button"
-            value="취소"
-            onClick={handleCancel}
-          />
-        </div>
-      </form>
-      <style jsx>{`
-        form {
-          display: flex;
-          flex-direction: column;
-        }
-        .fileContainer {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .upload-name {
-          display: inline-block;
-          width: 60%;
-          height: 2.1rem;
-          padding: 0 10px;
-          vertical-align: middle;
-          border: 1px solid #dddddd;
-          color: #999999;
-        }
-        .findFile {
-          display: inline-block;
-          width: 40%
-          height: 1.2rem;
-          margin-left: 0.5rem;
-          padding: 0.5rem 0.8rem;
-          color: #fff;
-          vertical-align: middle;
-          background-color: #999999;
-        }
-        .category {
-          display: flex;
-          align-items: center;
-          height: 2rem;
-          padding-left: 0.5rem;
-        }
-        .storeName {
-          width: 100vw;
-          height: 2rem;
-          border: none;
-          border-top: 1px solid black;
-          border-bottom: 1px solid black;
-          font-size: 1rem;
-          padding-left: 0.5rem;
-        }
-        .storeInfo {
-          width: calc(100vw - 0.6rem);
-          height: 50vh;
-          border: none;
-          border-bottom: 1px solid black;
-          font-size: 1rem;
-          padding-top: 0.5rem;
-          padding-left: 0.5rem;
-          resize: none;
-        }
-        .storeInfo::-webkit-scrollbar {
-          display: none;
-        }
-        .selectFile {
-          background-color: white;
-          border: none;
-          text-decoration: underline;
-          margin-left: auto;
-          margin-right: 1rem;
-        }
-        #hide {
-          width: 1rem;
-          height: 1rem;
-        }
-        .labelContainer {
-          margin-left: auto;
-          margin-right: 1rem;
-          min-height: 3rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .submit {
-          margin-right: 0.5rem;
-          background-color: rgb(0, 120, 212);
-          color: white;
-          border: 1px solid #afafaf;
-          border-radius: 0.5rem;
-          width: 3rem;
-          height: 2rem;
-        }
-        .cancle {
-          background-color: white;
-          border: 1px solid #afafaf;
-          border-radius: 0.5rem;
-          width: 3rem;
-          height: 2rem;
-        }
-        .buttonContainer {
-          margin-left: auto;
-          margin-right: 1rem;
-        }
-      `}</style>
-    </>
+          <Hide>
+            <CheckBox
+              id="checkbox"
+              type="checkbox"
+              onClick={() => setIsHide((prev) => !prev)}
+            />
+            <Label text="나만 보기" htmlFor="checkbox" />
+          </Hide>
+          <DropzoneContainer>
+            <ImageDrop
+              imageFile={imageFile}
+              handleSelectedFile={handleSelectedFile}
+            />
+          </DropzoneContainer>
+          <ButtonContainer>
+            <Button kind="quaternary" shape="semi-round" onClick={handleCancel}>
+              취소
+            </Button>
+            <Button
+              id="submit"
+              kind="primary"
+              shape="semi-round"
+              borderColor="#1967D2"
+              backgroundColor="#1967D2"
+              onClick={onSubmit}
+            >
+              등록
+            </Button>
+          </ButtonContainer>
+        </>
+      )}
+    </Form>
   )
 }
 
 export default RegStore
+
+const TitleInput = styled(ControlledInput)`
+  max-width: 100%;
+  height: 2rem;
+  text-align: start;
+  border-bottom: 1px solid ${color.black};
+`
+
+const STextArea = styled(TextArea)`
+  border-bottom: 1px solid ${color.black};
+`
+
+const Hide = styled.div`
+  height: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 0.5rem;
+`
+
+const CheckBox = styled(ControlledInput)`
+  width: 1rem;
+  height: 1rem;
+`
+
+const DropzoneContainer = styled.div`
+  align-self: center;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-right: 0.5rem;
+`
