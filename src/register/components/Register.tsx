@@ -13,9 +13,9 @@ import {
   Label,
   TextArea
 } from '@shared/components'
-import { FormContentProps } from '@shared/types'
+import { FormContentProps, InfoData } from '@shared/types'
 import { color } from '@shared/constants'
-import { ImageDrop } from '@community/components'
+import ImageDrop from './ImageDrop'
 
 declare global {
   interface Window {
@@ -72,7 +72,7 @@ const Register = () => {
     imageUrl
   }: any) => {
     try {
-      const storeObj = {
+      const storeObj: InfoData = {
         uid: authService.currentUser?.uid,
         creatorName: authService.currentUser?.displayName,
         storeName: title?.toLowerCase(),
@@ -90,7 +90,7 @@ const Register = () => {
       await addDoc(collection(dbService, 'mystore'), storeObj)
     } catch (error) {
       if (error instanceof Error) {
-        showToast(error as any, 'error')
+        showToast(error.message, 'error')
       }
     }
 

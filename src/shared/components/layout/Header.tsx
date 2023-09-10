@@ -51,14 +51,10 @@ interface HeaderProps {
 
 export const Header = ({ text, handleOrder }: HeaderProps) => {
   return (
-    <HeaderContainer
-      css={css`
-        border-bottom: 1px solid black;
-      `}
-    >
+    <HeaderContainer>
       {handleOrder ? (
         <>
-          <HeaderContent css={css``}>{text}</HeaderContent>
+          <HeaderContent>{text}</HeaderContent>
           <OrderByContainer>
             <OrderBy onClick={() => handleOrder('latest')}>최신순</OrderBy>
             <OrderBy onClick={() => handleOrder('popularity')}>인기순</OrderBy>
@@ -79,6 +75,7 @@ const HeaderContainer = styled.section`
   min-height: 5vh;
   background-color: white;
   z-index: 999;
+  border-bottom: 1px solid black;
 `
 
 const ControlButton = styled.button`
