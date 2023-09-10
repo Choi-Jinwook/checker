@@ -38,4 +38,7 @@ const STArea = styled.textarea`
   border: none;
   font-size: 1rem;
   resize: none;
+  &:focus {
+    outline: none;
+  }
 `

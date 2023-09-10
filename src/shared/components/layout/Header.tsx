@@ -51,37 +51,31 @@ interface HeaderProps {
 
 export const Header = ({ text, handleOrder }: HeaderProps) => {
   return (
-    <>
+    <HeaderContainer
+      css={css`
+        border-bottom: 1px solid black;
+      `}
+    >
       {handleOrder ? (
-        <HeaderContainer
-          css={css`
-            border-bottom: 1px solid black;
-          `}
-        >
-          <HeaderContent>{text}</HeaderContent>
+        <>
+          <HeaderContent css={css``}>{text}</HeaderContent>
           <OrderByContainer>
             <OrderBy onClick={() => handleOrder('latest')}>최신순</OrderBy>
             <OrderBy onClick={() => handleOrder('popularity')}>인기순</OrderBy>
           </OrderByContainer>
-        </HeaderContainer>
+        </>
       ) : (
-        <HeaderContainer
-          css={css`
-            border-bottom: 1px solid black;
-          `}
-        >
-          <HeaderContent>{text}</HeaderContent>
-        </HeaderContainer>
+        <HeaderContent>{text}</HeaderContent>
       )}
-    </>
+    </HeaderContainer>
   )
 }
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.section`
   position: fixed;
   display: flex;
   flex-direction: row;
-  width: 100%;
+  min-width: 100%;
   min-height: 5vh;
   background-color: white;
   z-index: 999;

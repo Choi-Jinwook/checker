@@ -10,7 +10,7 @@ export default function Main() {
       <Title>마이픽 MyPick</Title>
       <Explanation>좋아하는 장소를 저장해보세요!</Explanation>
       <Link href="/login">
-        <SButton kind="secondary">시작하기▶</SButton>
+        <StartButton kind="secondary">시작하기▶</StartButton>
       </Link>
     </Container>
   )
@@ -34,10 +34,8 @@ const Explanation = styled.div`
   font-size: 1rem;
 `
 
-const SButton = styled(Button)`
-  width: auto;
-  height: auto;
-  border: none;
+const StartButton = styled(Button)`
   color: ${color.black};
-  text-align: center;
+  border-color: ${color.white};
+  font-weight: 400;
 `

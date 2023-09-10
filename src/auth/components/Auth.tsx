@@ -11,7 +11,7 @@ import { color } from '@shared/constants'
 import { Button, ControlledInput, Form } from '@shared/components'
 import { FormContentProps } from '@shared/types'
 
-export default function Auth() {
+const Auth = () => {
   const [login, setLogin] = useState(true)
   const [error, setError] = useState('')
   const { push } = useRouter()
@@ -59,7 +59,7 @@ export default function Auth() {
 
   return (
     <Container>
-      <LoginForm onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         {({
           handleFirstContent: handleEmail,
           handleSecondContent: handlePassword,
@@ -77,19 +77,12 @@ export default function Auth() {
               placeholder="Password"
               onChange={handlePassword}
             />
-
-            <Button
-              kind="primary"
-              shape="semi-round"
-              borderColor="#1a73e8"
-              backgroundColor="#1a73e8"
-              onClick={onSubmit}
-            >
+            <Button kind="primary" shape="semi-round" onClick={onSubmit}>
               {login ? '로그인' : '회원가입'}
             </Button>
           </>
         )}
-      </LoginForm>
+      </Form>
       <DivContainer>
         <Converter onClick={toggleLogin2Signup}>
           {login ? '회원가입하기' : '로그인하기'}
@@ -101,7 +94,9 @@ export default function Auth() {
   )
 }
 
-const Container = styled.div`
+export default Auth
+
+const Container = styled.section`
   display: flex;
   flex-direction: column;
   width: 100vw;
@@ -109,8 +104,6 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 `
-
-const LoginForm = styled(Form)``
 
 const Input = styled(ControlledInput)`
   display: block;
@@ -121,7 +114,7 @@ const Input = styled(ControlledInput)`
   text-align: left;
 `
 
-const DivContainer = styled.div`
+const DivContainer = styled.section`
   position: relative;
   top: 10px;
   text-align: center;

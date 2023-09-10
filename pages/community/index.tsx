@@ -112,17 +112,6 @@ export default function Community() {
     <>
       <div className="container">
         <Header text="커뮤니티" handleOrder={handleOrder} />
-        {/* <div className="headerContainer">
-          <div className="header">커뮤니티</div>
-          <div className="orderByContainer">
-            <div className="option1" onClick={() => setOrderBy('latest')}>
-              최신순
-            </div>
-            <div className="option2" onClick={() => setOrderBy('popularity')}>
-              인기순
-            </div>
-          </div>
-        </div> */}
         {sortedDataArray ? (
           sortedDataArray.map((el: any) => {
             if (el.hide === true) return null

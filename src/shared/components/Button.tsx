@@ -4,7 +4,13 @@ import { color } from '@shared/constants'
 import { HTMLAttributes, MouseEventHandler } from 'react'
 
 interface SButtonProps {
-  kind?: 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'mustard'
+  kind?:
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'quaternary'
+    | 'mustard'
+    | 'delete'
   size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge'
   shape?: 'normal' | 'semi-round'
 }
@@ -65,6 +71,7 @@ const SButton = styled.button<SButtonProps>`
 const styles = {
   primary: css`
     color: ${color.white};
+    border-color: ${color.main};
     background-color: ${color.main};
   `,
   secondary: css`
@@ -85,6 +92,11 @@ const styles = {
     color: ${color.white};
     border-color: ${color.mustard};
     background-color: ${color.mustard};
+  `,
+  delete: css`
+    color: ${color.white};
+    border-color: ${color.warning};
+    background-color: ${color.warning};
   `,
   xsmall: css`
     width: 46px;
