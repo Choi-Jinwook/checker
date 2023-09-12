@@ -15,9 +15,16 @@ interface FormProps {
   children(props: ChildrenProps): React.ReactNode
   onSubmit(value: FormContentProps): Promise<void>
   cssStyle?: Interpolation<Theme>
+  second?: boolean
 }
 
-const Form = ({ id, children, onSubmit, cssStyle }: FormProps) => {
+const ControlledForm = ({
+  id,
+  children,
+  onSubmit,
+  cssStyle,
+  second
+}: FormProps) => {
   const [value, setValue] = useState<FormContentProps>({
     content1: '',
     content2: ''
@@ -37,14 +44,21 @@ const Form = ({ id, children, onSubmit, cssStyle }: FormProps) => {
 
       if ((e.target as HTMLButtonElement).id === 'cancel') return
 
-      if (value.content1 === '' || value.content2 === '') {
-        alert('빈 내용이 있어요.')
-        return
+      if (second) {
+        if (value.content1 === '' || value.content2 === '') {
+          alert('빈 내용이 있어요.')
+          return
+        }
+      } else {
+        if (value.content1 === '') {
+          alert('빈 내용이 있어요.')
+          return
+        }
       }
 
       onSubmit(value)
     },
-    [onSubmit, value]
+    [onSubmit, value, second]
   )
 
   return (
@@ -59,7 +73,7 @@ const Form = ({ id, children, onSubmit, cssStyle }: FormProps) => {
   )
 }
 
-export default Form
+export default ControlledForm
 
 const SForm = styled.form`
   display: flex;

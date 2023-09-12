@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import EventMarkerContainer from './EventMarkerContainer'
-import { useStoreData } from '@shared/hooks'
 import { Coords, Marker } from '@shared/types'
 import StoreInfo from './StoreInfo'
 
-const KakaoMap = ({ seeMine, uid }: Marker) => {
+const KakaoMap = ({ seeMine, uid, data }: Marker) => {
   const [mapCenter, setMapCenter] = useState<Coords>({
     lat: 0,
     lng: 0
@@ -16,7 +15,6 @@ const KakaoMap = ({ seeMine, uid }: Marker) => {
   })
   const [isMarkerInfoOpen, setIsMarkerInfoOpen] = useState(false)
   const [clickedMarker, setClickedMarker] = useState('')
-  const { data: dataArray } = useStoreData()
 
   const handleClickedMarker = (id: string) => {
     if (isMarkerInfoOpen) {
@@ -75,7 +73,7 @@ const KakaoMap = ({ seeMine, uid }: Marker) => {
         {/* seemine에 따른 저장된 마커 보이기 */}
         {seeMine ? (
           <>
-            {dataArray?.map((el: any) => {
+            {data.map((el: any) => {
               return (
                 el.uid === uid && (
                   <EventMarkerContainer
@@ -90,7 +88,7 @@ const KakaoMap = ({ seeMine, uid }: Marker) => {
           </>
         ) : (
           <>
-            {dataArray?.map((el: any) => {
+            {data.map((el: any) => {
               if (el.hide) {
                 if (el.uid !== uid) return null
               }

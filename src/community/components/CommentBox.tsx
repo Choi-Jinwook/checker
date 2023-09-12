@@ -1,13 +1,18 @@
 import styled from '@emotion/styled'
 import { queryClient } from '@pages/_app'
-import { Button, ControlledInput, Form } from '@shared/components'
+import {
+  Button,
+  ControlledInput,
+  UnControlledForm,
+  UnControlledInput
+} from '@shared/components'
 import { dbService } from '@shared/firebase'
 import { useToast } from '@shared/hooks'
 import { Comment, FormContentProps } from '@shared/types'
 import { doc, updateDoc } from 'firebase/firestore'
 import React from 'react'
 
-const CommentBox = ({ data, comments, onClose, userData }: Comment) => {
+const CommentBox = ({ data, comments, userData }: Comment) => {
   const initialComment = data.comments
   const userName = userData.displayName
   const { showToast } = useToast()
@@ -23,10 +28,6 @@ const CommentBox = ({ data, comments, onClose, userData }: Comment) => {
         comments: updatedComment
       })
       queryClient.invalidateQueries('data')
-      const id = document.querySelector('#comment')
-      console.log((id as any).value)
-
-      if (id !== null) (id as any).value = ''
     } catch (error) {
       showToast(`${error}`, 'error')
     }
@@ -43,13 +44,8 @@ const CommentBox = ({ data, comments, onClose, userData }: Comment) => {
         )
       })}
       <br />
-      <Form onSubmit={handleSubmit}>
-        {({
-          value,
-          handleFirstContent: handleComment,
-          handleSecondContent: handlePreventError,
-          onSubmit
-        }) => (
+      <UnControlledForm onSubmit={handleSubmit}>
+        {({ value, handleFirstContent: onChange, onSubmit }) => (
           <CommentFormContainer>
             <CommentInput
               id="comment"
@@ -58,23 +54,14 @@ const CommentBox = ({ data, comments, onClose, userData }: Comment) => {
               shape="semi-round"
               value={value?.content1}
               placeholder="댓글 입력"
-              onChange={handleComment}
+              onChange={onChange}
             />
-            <Button
-              shape="semi-round"
-              onClick={() => {
-                onSubmit
-                handlePreventError('123')
-              }}
-            >
+            <Button shape="semi-round" onClick={onSubmit}>
               입력
-            </Button>
-            <Button kind="tertiary" shape="semi-round" onClick={onClose}>
-              닫기
             </Button>
           </CommentFormContainer>
         )}
-      </Form>
+      </UnControlledForm>
     </Container>
   )
 }
@@ -100,7 +87,7 @@ const CommentFormContainer = styled.section`
   align-items: start;
 `
 
-const CommentInput = styled(ControlledInput)`
+const CommentInput = styled(UnControlledInput)`
   width: 100%;
   height: 36px;
   align-self: baseline;

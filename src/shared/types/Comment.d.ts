@@ -4,6 +4,5 @@ export interface Comment {
     comment: string
     writer: string
   }[]
-  onClose: () => void
   userData: any
 }

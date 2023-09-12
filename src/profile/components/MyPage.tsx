@@ -8,13 +8,14 @@ import { Button } from '@shared/components'
 import { css } from '@emotion/react'
 import { color } from '@shared/constants'
 import styled from '@emotion/styled'
-import { useUserData } from '@shared/hooks'
 import Image from 'next/image'
 import { authService } from '@shared/firebase'
 import { useRouter } from 'next/router'
+import { useQuery } from 'react-query'
+import { fetchUserData } from '@shared/apis'
 
 const MyPage = () => {
-  const { data: userData } = useUserData()
+  const { data: userData } = useQuery('user', () => fetchUserData())
   const { push } = useRouter()
 
   const handleLogout = () => {

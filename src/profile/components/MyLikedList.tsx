@@ -1,21 +1,22 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
+import { fetchStoreData, fetchUserData } from '@shared/apis'
 import { Header } from '@shared/components/layout'
 import { color, emptyPhoto } from '@shared/constants'
-import { useStoreData, useUserData } from '@shared/hooks'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { useQuery } from 'react-query'
 
 const MyLikedList = () => {
-  const { data: userData } = useUserData()
-  const { data: dataArray } = useStoreData()
+  const { data: userData } = useQuery('user', () => fetchUserData())
+  const { data: placeData } = useQuery('data', () => fetchStoreData())
 
   return (
     <>
       <Header text="내가 좋아한" />
       <Container>
-        {dataArray?.map((el: any) => {
+        {placeData?.map((el: any) => {
           if (el.likeUserList?.includes(userData?.uid)) {
             return (
               <React.Fragment key={el.id}>

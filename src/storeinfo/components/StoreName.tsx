@@ -1,23 +1,30 @@
 import React from 'react'
-import { useStoreData } from '@shared/hooks'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Header } from '@shared/components/layout'
 import styled from '@emotion/styled'
+import goBack from '@public/goBack.jpeg'
 import { css } from '@emotion/react'
 import { emptyPhoto } from '@shared/constants'
+import { useQuery } from 'react-query'
+import { fetchStoreData } from '@shared/apis'
 
 const StoreName = () => {
-  const { data: dataArray, isLoading, isError } = useStoreData()
+  const {
+    data: placeData,
+    isLoading,
+    isError
+  } = useQuery('data', () => fetchStoreData())
   const router = useRouter()
   const { storename } = router.query
-  const storeInfo = dataArray?.find((obj) => obj['storeName'] === storename)
+  const storeInfo = placeData?.find((obj) => obj['storeName'] === storename)
 
   if (isLoading) return <div>Loading</div>
   if (isError) return <div>error occured</div>
 
   return (
     <>
+      <GoBack src={goBack} alt="goBack" onClick={() => router.back()} />
       <Header text="장소 정보" />
       <Container>
         <Image
@@ -47,6 +54,15 @@ const StoreName = () => {
 }
 
 export default StoreName
+
+const GoBack = styled(Image)`
+  position: fixed;
+  right: 3px;
+  top: 4px;
+  width: 30px;
+  height: 30px;
+  z-index: 1000;
+`
 
 const Container = styled.section`
   display: flex;

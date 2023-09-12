@@ -1,18 +1,6 @@
-import { useMutation, useQuery } from 'react-query'
-import { fetchLikes, fetchStoreData, fetchUserData } from '@shared/apis'
+import { useMutation } from 'react-query'
+import { fetchLikes } from '@shared/apis'
 import { TypeOptions, toast } from 'react-toastify'
-import { UserObj } from '@shared/types'
-
-export const useStoreData = () => {
-  return useQuery(
-    'data',
-    async () => {
-      const res = await fetchStoreData()
-      return res
-    },
-    { refetchOnWindowFocus: false } // true로 바꾸기
-  )
-}
 
 export const useLike = () => {
   return useMutation(
@@ -28,12 +16,6 @@ export const useLike = () => {
       await fetchLikes(id, uid, likes)
     }
   )
-}
-
-export const useUserData = () => {
-  return useQuery<UserObj | null>('user', fetchUserData, {
-    refetchOnWindowFocus: false
-  })
 }
 
 export const useToast = () => {

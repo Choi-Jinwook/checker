@@ -1,13 +1,19 @@
 import React from 'react'
-import { useUserData } from '@shared/hooks'
 import { useState } from 'react'
 import KakaoMap from './KaKaoMap'
 import ListSearch from './ListSearch'
 import { HomeHeader } from '@shared/components/layout'
+import { useQuery } from 'react-query'
+import { fetchStoreData, fetchUserData } from '@shared/apis'
 
 export default function Main() {
   const [seeMine, setSeeMine] = useState<boolean>(true)
-  const { data: userData, isLoading, isError } = useUserData()
+  const {
+    data: userData,
+    isLoading,
+    isError
+  } = useQuery('user', () => fetchUserData())
+  const { data: placeData } = useQuery('data', () => fetchStoreData())
 
   const toggleSeeMine = () => {
     setSeeMine((prev) => !prev)
@@ -19,8 +25,12 @@ export default function Main() {
   return (
     <>
       <HomeHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
-      <KakaoMap seeMine={seeMine} uid={userData?.uid} />
-      {userData ? <ListSearch seeMine={seeMine} uid={userData.uid} /> : null}
+      {placeData && (
+        <KakaoMap data={placeData} seeMine={seeMine} uid={userData?.uid} />
+      )}
+      {userData && placeData && (
+        <ListSearch data={placeData} seeMine={seeMine} uid={userData.uid} />
+      )}
     </>
   )
 }

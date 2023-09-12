@@ -2,7 +2,7 @@ import React from 'react'
 import { Footer } from '@shared/components/layout'
 import '@shared/styles/globals.css'
 import { useRouter } from 'next/router'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { SessionProvider } from 'next-auth/react'
@@ -17,17 +17,19 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider session={pageProps.session}>
       <QueryClientProvider client={queryClient}>
-        {shouldRenderFooter ? (
-          <Footer>
-            <Component {...pageProps} />
-            <ToastContainer />
-          </Footer>
-        ) : (
-          <>
-            <Component {...pageProps} />
-            <ToastContainer />
-          </>
-        )}
+        <Hydrate state={pageProps.dehydratedState}>
+          {shouldRenderFooter ? (
+            <Footer>
+              <Component {...pageProps} />
+              <ToastContainer />
+            </Footer>
+          ) : (
+            <>
+              <Component {...pageProps} />
+              <ToastContainer />
+            </>
+          )}
+        </Hydrate>
       </QueryClientProvider>
     </SessionProvider>
   )

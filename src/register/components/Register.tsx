@@ -8,8 +8,8 @@ import { authService, dbService, storageService } from '@shared/firebase'
 import styled from '@emotion/styled'
 import {
   Button,
-  ControlledInput,
-  Form,
+  UnControlledInput,
+  ControlledForm,
   Label,
   TextArea
 } from '@shared/components'
@@ -150,7 +150,7 @@ const Register = () => {
   }
 
   return (
-    <Form id="cancel" onSubmit={handleSubmit}>
+    <ControlledForm id="cancel" onSubmit={handleSubmit}>
       {({
         value,
         handleFirstContent: handleTitle,
@@ -194,13 +194,13 @@ const Register = () => {
           </ButtonContainer>
         </>
       )}
-    </Form>
+    </ControlledForm>
   )
 }
 
 export default Register
 
-const TitleInput = styled(ControlledInput)`
+const TitleInput = styled(UnControlledInput)`
   max-width: 100%;
   height: 2rem;
   text-align: start;
@@ -219,7 +219,7 @@ const Hide = styled.div`
   margin-right: 0.5rem;
 `
 
-const CheckBox = styled(ControlledInput)`
+const CheckBox = styled(UnControlledInput)`
   width: 1rem;
   height: 1rem;
 `

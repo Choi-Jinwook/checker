@@ -10,6 +10,7 @@ import { emptyPhoto } from '@shared/constants'
 import { useState } from 'react'
 import { fetchLikes } from '@shared/apis'
 import { queryClient } from '@pages/_app'
+import { useRouter } from 'next/router'
 
 interface AtricleProps {
   userData: any
@@ -20,6 +21,7 @@ interface AtricleProps {
 const Article = ({ data, userData, handleCommentBox }: AtricleProps) => {
   const [likeUserList, setLikeUserList] = useState(data.likeUserList)
   const isUserLikes = likeUserList.includes(userData.uid)
+  const { push } = useRouter()
 
   const handleLikeClick = async () => {
     if (isUserLikes) {
@@ -41,7 +43,9 @@ const Article = ({ data, userData, handleCommentBox }: AtricleProps) => {
     <ContentCard>
       <ProfileImage src={profile} alt="profile" width={35} height={35} />
       <CreatorName>{data.creatorName}</CreatorName>
-      <PlaceName>{data.storeName}</PlaceName>
+      <PlaceName onClick={() => push(`/storeinfo/${data.storeName}`)}>
+        {data.storeName}
+      </PlaceName>
       <MainPhoto
         style={{
           backgroundImage: `url(${data.imageUrl ? data.imageUrl : emptyPhoto})`

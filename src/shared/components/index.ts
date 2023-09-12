@@ -1,5 +1,6 @@
 export { default as Button } from './Button'
 export * from './Input'
-export { default as Form } from './Form'
+export { default as ControlledForm } from './ControlledForm'
+export { default as UnControlledForm } from './UnControlledForm'
 export { default as TextArea } from './TextArea'
 export { default as Label } from './Label'

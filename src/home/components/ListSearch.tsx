@@ -1,14 +1,12 @@
 import React from 'react'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import { useStoreData } from '@shared/hooks'
 import { Marker } from '@shared/types'
 import styled from '@emotion/styled'
 import { ControlledInput } from '@shared/components'
 
-const ListSearch = ({ seeMine, uid }: Marker) => {
+const ListSearch = ({ seeMine, uid, data }: Marker) => {
   const [search, setSearch] = useState('')
-  const { data: dataArray } = useStoreData()
   const { push } = useRouter()
 
   const handleSearchWordChange = (value: string) => {
@@ -28,7 +26,7 @@ const ListSearch = ({ seeMine, uid }: Marker) => {
         onChange={(value) => handleSearchWordChange(value)}
       />
       <ListContainer>
-        {dataArray?.map((el: any) => {
+        {data.map((el: any) => {
           const isHidden = el.hide
           const storeName = el.storeName
           const uidMatch = uid === el.uid
@@ -64,23 +62,25 @@ const SearchInput = styled(ControlledInput)`
 `
 
 const ListContainer = styled.section`
-  width: 100vw;
-  height: 44vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: calc(100vw - 8px);
+  height: calc(44vh - 8px);
   padding: 4px;
-  padding-top: 6px;
   overflow-y: scroll;
   &::-webkit-scrollbar {
     display: none;
   }
 `
 
-const StoreName = styled.div`
-  width: inherit;
+const StoreName = styled.span`
+  width: auto;
+  min-height: 2rem;
   font-size: 1.5rem;
-  color: black;
-  text-decoration: none;
-  overflow: hidden;
+  overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding-bottom: 0.5rem;
+  color: black;
+  text-decoration: none;
 `

@@ -1,4 +1,5 @@
 export interface Marker {
-  seeMine: boolean;
-  uid: string | null | undefined;
+  seeMine: boolean
+  uid: string | null | undefined
+  data: any[]
 }

@@ -8,7 +8,7 @@ import { authService } from '@shared/firebase'
 import { useToast } from '@shared/hooks'
 import styled from '@emotion/styled'
 import { color } from '@shared/constants'
-import { Button, ControlledInput, Form } from '@shared/components'
+import { Button, ControlledInput, ControlledForm } from '@shared/components'
 import { FormContentProps } from '@shared/types'
 
 const Auth = () => {
@@ -32,11 +32,11 @@ const Auth = () => {
         data = await createUserWithEmailAndPassword(
           authService,
           email,
-          password
+          password!
         )
         showToast('회원가입에 성공했습니다.', 'success')
       } else {
-        data = await signInWithEmailAndPassword(authService, email, password)
+        data = await signInWithEmailAndPassword(authService, email, password!)
         showToast('로그인에 성공했습니다.', 'success')
       }
       push('/home')
@@ -59,7 +59,7 @@ const Auth = () => {
 
   return (
     <Container>
-      <Form onSubmit={handleSubmit}>
+      <ControlledForm second onSubmit={handleSubmit}>
         {({
           handleFirstContent: handleEmail,
           handleSecondContent: handlePassword,
@@ -82,7 +82,7 @@ const Auth = () => {
             </Button>
           </>
         )}
-      </Form>
+      </ControlledForm>
       <DivContainer>
         <Converter onClick={toggleLogin2Signup}>
           {login ? '회원가입하기' : '로그인하기'}

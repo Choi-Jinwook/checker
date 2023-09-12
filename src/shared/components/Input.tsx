@@ -20,37 +20,41 @@ interface ControlledInputProps
   cssStyle?: Interpolation<Theme>
   value?: string
   type?: string
+  ref?: React.RefObject<HTMLInputElement>
   onChange?(value: string): void
 }
 
-export const UncontrolledInput = forwardRef<HTMLInputElement, InputProps>(
-  function Input(
-    {
-      type,
-      shape = 'normal',
-      kind = 'primary',
-      cssStyle,
-      value: initialValue,
-      ...props
-    },
-    ref
-  ) {
-    const [value, setValue] = useState<string>(initialValue || '')
+export const UnControlledInput = ({
+  shape = 'normal',
+  kind = 'primary',
+  type,
+  cssStyle,
+  value: initialValue,
+  onChange,
+  ...props
+}: ControlledInputProps) => {
+  const [value, setValue] = useState<string>(initialValue || '')
 
-    return (
-      <SInput
-        ref={ref}
-        type={type}
-        shape={shape}
-        kind={kind}
-        css={cssStyle}
-        value={value}
-        onChange={({ target: { value } }) => setValue(value)}
-        {...props}
-      />
-    )
-  }
-)
+  useEffect(() => {
+    setValue(initialValue || '')
+  }, [initialValue])
+
+  useEffect(() => {
+    onChange?.(value)
+  }, [value, onChange])
+
+  return (
+    <SInput
+      type={type ? type : 'text'}
+      shape={shape}
+      kind={kind}
+      css={cssStyle}
+      value={value}
+      onChange={({ target: { value } }) => setValue(value)}
+      {...props}
+    />
+  )
+}
 
 export const ControlledInput = ({
   shape = 'normal',
