@@ -3,17 +3,21 @@ import styled from '@emotion/styled'
 import { fetchStoreData, fetchUserData } from '@shared/apis'
 import { Header } from '@shared/components/layout'
 import { color, emptyPhoto } from '@shared/constants'
+import goBack from '@public/goBack.jpeg'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { useQuery } from 'react-query'
 
 const MyLikedList = () => {
+  const router = useRouter()
   const { data: userData } = useQuery('user', () => fetchUserData())
   const { data: placeData } = useQuery('data', () => fetchStoreData())
 
   return (
     <>
+      <GoBack src={goBack} alt="goBack" onClick={() => router.back()} />
       <Header text="내가 좋아한" />
       <Container>
         {placeData?.map((el: any) => {
@@ -65,6 +69,15 @@ const MyLikedList = () => {
 }
 
 export default MyLikedList
+
+const GoBack = styled(Image)`
+  position: fixed;
+  right: 10px;
+  top: 14px;
+  width: 30px;
+  height: 30px;
+  z-index: 1000;
+`
 
 const Container = styled.section`
   position: absolute;
