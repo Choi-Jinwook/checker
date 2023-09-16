@@ -63,6 +63,7 @@ const SButton = styled.button<SButtonProps>`
   display: inline-block;
   word-break: keep-all;
   white-space: pre;
+  text-align: center;
 
   ${({ kind }) => styles[kind!]}
   ${({ size }) => styles[size!]}
