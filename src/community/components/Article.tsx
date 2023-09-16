@@ -93,6 +93,7 @@ const ContentCard = styled.div`
   grid-template-columns: repeat(10, 10vw);
   align-items: center;
   text-align: center;
+  margin-bottom: 12px;
 `
 
 const ProfileImage = styled(Image)`

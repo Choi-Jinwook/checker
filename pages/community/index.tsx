@@ -93,7 +93,7 @@ const Container = styled.section`
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 90vh;
+  height: 87vh;
   padding-top: 5vh;
   overflow: hidden;
   overflow-y: scroll;

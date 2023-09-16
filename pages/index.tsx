@@ -36,7 +36,7 @@ const Explanation = styled.div`
 
 const StartButton = styled(Button)`
   color: ${color.black};
-  border-color: ${color.white};
+  border-color: ${color.gray05};
   font-weight: 400;
   min-width: 100px;
 `
