@@ -54,7 +54,7 @@ export default ListSearch
 const SearchInput = styled(ControlledInput)`
   width: 100%;
   max-width: 100%;
-  height: 5vh;
+  height: 6%;
   border-bottom: 1px solid black;
   box-sizing: border-box;
   padding: 4px;
@@ -63,7 +63,7 @@ const SearchInput = styled(ControlledInput)`
 
 const ListContainer = styled.section`
   width: calc(100vw - 8px);
-  height: calc(41.5vh - 8px);
+  height: 52.5%;
   padding: 4px;
   overflow-y: scroll;
   &::-webkit-scrollbar {

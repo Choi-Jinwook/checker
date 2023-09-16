@@ -5,6 +5,7 @@ import ListSearch from './ListSearch'
 import { HomeHeader } from '@shared/components/layout'
 import { useQuery } from 'react-query'
 import { fetchStoreData, fetchUserData } from '@shared/apis'
+import styled from '@emotion/styled'
 
 export default function Main() {
   const [seeMine, setSeeMine] = useState<boolean>(true)
@@ -25,12 +26,21 @@ export default function Main() {
   return (
     <>
       <HomeHeader seeMine={seeMine} toggleSeeMine={toggleSeeMine} />
-      {placeData && (
-        <KakaoMap data={placeData} seeMine={seeMine} uid={userData?.uid} />
-      )}
-      {userData && placeData && (
-        <ListSearch data={placeData} seeMine={seeMine} uid={userData.uid} />
-      )}
+      <Container>
+        {placeData && (
+          <KakaoMap data={placeData} seeMine={seeMine} uid={userData?.uid} />
+        )}
+        {userData && placeData && (
+          <ListSearch data={placeData} seeMine={seeMine} uid={userData.uid} />
+        )}
+      </Container>
     </>
   )
 }
+
+const Container = styled.section`
+  position: absolute;
+  top: 7%;
+  width: 100%;
+  height: 85%;
+`

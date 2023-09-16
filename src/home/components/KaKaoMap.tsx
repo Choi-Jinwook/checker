@@ -61,7 +61,12 @@ const KakaoMap = ({ seeMine, uid, data }: Marker) => {
       <Map
         id="kakaoMap"
         center={{ lat: mapCenter.lat, lng: mapCenter.lng }}
-        style={{ width: '100%', height: '45vh', marginBottom: '0.1rem' }}
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '40%',
+          marginBottom: '0.1rem'
+        }}
         onClick={(_t, mouseEvent) => {
           setClickCoords({
             lat: mouseEvent.latLng.getLat(),

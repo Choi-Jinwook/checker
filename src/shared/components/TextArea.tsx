@@ -33,7 +33,7 @@ export default TextArea
 const STArea = styled.textarea`
   font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   width: 100%;
-  height: 50vh;
+  height: 40vh;
   box-sizing: border-box;
   border: none;
   font-size: 1rem;

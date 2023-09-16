@@ -50,11 +50,7 @@ const MyPage = () => {
           로그아웃
         </Button>
         <MenuContainer className="userListContainer">
-          <Menu
-            css={css`
-              border-bottom: 1px solid gray;
-            `}
-          >
+          <Menu>
             <MenuLink href="/profile/mylikelist">
               <Image src={list} alt="list" width={30} height={30} />내 좋아요
               목록
@@ -77,38 +73,39 @@ export default MyPage
 const Container = styled.section`
   display: flex;
   flex-direction: column;
-  position: relative;
-  top: 5vh;
+  position: absolute;
+  top: 7%;
   width: 100vw;
-  height: 90vh;
+  height: 85%;
 `
 
 const ProfileContainer = styled.section`
   display: flex;
   width: 100vw;
-  height: 20vh;
+  height: 30%;
   align-items: center;
 `
 
 const ProfileContent = styled.div`
-  margin-left: calc((20vh - 100px) / 2);
+  margin-left: 10%;
 `
 
 const MenuContainer = styled.section`
+  height: 40%;
   margin-top: 1rem;
   border: none;
   border-top: 1px solid gray;
-  border-bottom: 1px solid gray;
 `
 
 const Menu = styled.div`
   display: flex;
   width: 100vw;
-  height: 7vh;
+  height: 20%;
   align-items: center;
   font-size: 1rem;
   gap: 1rem;
   padding-left: 1rem;
+  border-bottom: 1px solid gray;
 `
 
 const MenuLink = styled(Link)`

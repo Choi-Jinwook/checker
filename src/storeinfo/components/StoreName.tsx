@@ -57,8 +57,8 @@ export default StoreName
 
 const GoBack = styled(Image)`
   position: fixed;
-  right: 3px;
-  top: 4px;
+  right: 10px;
+  top: 14px;
   width: 30px;
   height: 30px;
   z-index: 1000;
@@ -67,10 +67,11 @@ const GoBack = styled(Image)`
 const Container = styled.section`
   display: flex;
   flex-direction: column;
+  position: absolute;
+  top: 7%;
   width: 100vw;
-  height: 90vh;
+  height: 85%;
   gap: 1rem;
-  padding-top: 5vh;
 `
 
 const ContentContainer = styled.section`

@@ -1,14 +1,13 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ReactNode } from 'react'
 import home from '@public/home.png'
 import community from '@public/community.png'
 import profile from '@public/profile.png'
 import styled from '@emotion/styled'
 
 interface MyComponentProps {
-  children: ReactNode
+  children: React.ReactNode
 }
 
 const Footer = ({ children }: MyComponentProps) => {
@@ -31,7 +30,7 @@ const Footer = ({ children }: MyComponentProps) => {
           <Image src={profile} alt="profile" width={28} height={28} />
         </Link>
       </SFooter>
-      <ChildrenContainer>{children}</ChildrenContainer>
+      {children}
     </>
   )
 }
@@ -39,15 +38,15 @@ const Footer = ({ children }: MyComponentProps) => {
 export default Footer
 
 const SFooter = styled.footer`
-  width: 100%;
-  height: 8vh;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  text-align: center;
   position: fixed;
   bottom: 0px;
   left: 0px;
+  width: 100%;
+  height: 8%;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
   background-color: white;
   border-top: 1px solid black;
 `
@@ -55,5 +54,3 @@ const SFooter = styled.footer`
 const SLink = styled(Link)`
   width: 33%;
 `
-
-const ChildrenContainer = styled.div``

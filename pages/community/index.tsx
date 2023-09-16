@@ -92,9 +92,10 @@ export default function Community() {
 const Container = styled.section`
   display: flex;
   flex-direction: column;
+  position: absolute;
+  top: 7%;
   width: 100vw;
-  height: 87vh;
-  padding-top: 5vh;
+  height: 85%;
   overflow: hidden;
   overflow-y: scroll;
   &::-webkit-scrollbar {

@@ -72,7 +72,7 @@ const HeaderContainer = styled.section`
   display: flex;
   flex-direction: row;
   min-width: 100%;
-  min-height: 5vh;
+  height: 7%;
   background-color: white;
   z-index: 999;
   border-bottom: 1px solid black;

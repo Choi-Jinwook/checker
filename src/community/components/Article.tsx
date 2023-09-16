@@ -88,8 +88,8 @@ export default Article
 
 const ContentCard = styled.div`
   display: grid;
-  min-height: 70vh;
-  grid-template-rows: repeat(10, 7vh);
+  min-height: 70%;
+  grid-template-rows: repeat(10, 10%);
   grid-template-columns: repeat(10, 10vw);
   align-items: center;
   text-align: center;
@@ -156,7 +156,7 @@ const NumofLikes = styled.div`
 const StoreInfo = styled.div`
   grid-row: 9 / 11;
   grid-column: 1 / 11;
-  max-height: 14vh;
+  max-height: 100%;
   overflow-y: auto;
   text-align: left;
   margin-left: 0.5rem;

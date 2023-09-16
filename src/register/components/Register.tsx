@@ -150,7 +150,7 @@ const Register = () => {
   }
 
   return (
-    <ControlledForm id="cancel" onSubmit={handleSubmit}>
+    <SForm id="cancel" onSubmit={handleSubmit}>
       {({
         value,
         handleFirstContent: handleTitle,
@@ -194,11 +194,16 @@ const Register = () => {
           </ButtonContainer>
         </>
       )}
-    </ControlledForm>
+    </SForm>
   )
 }
 
 export default Register
+
+const SForm = styled(ControlledForm)`
+  width: 100%;
+  height: 92%;
+`
 
 const TitleInput = styled(UnControlledInput)`
   max-width: 100%;

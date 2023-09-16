@@ -67,9 +67,10 @@ const MyLikedList = () => {
 export default MyLikedList
 
 const Container = styled.section`
+  position: absolute;
+  top: 7%;
   width: 100vw;
-  height: 90vh;
-  padding-top: 5vh;
+  height: 85%;
   overflow-y: scroll;
   &::-webkit-scrollbar {
     display: none;
@@ -85,7 +86,7 @@ const LikeContainer = styled.section`
   display: flex;
   flex-direction: row;
   width: 100vw;
-  height: 170px;
+  height: 25%;
   font-size: 1.2rem;
   border-bottom: 1px solid ${color.gray05};
 `
