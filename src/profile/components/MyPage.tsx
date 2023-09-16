@@ -40,7 +40,6 @@ const MyPage = () => {
           kind="quaternary"
           shape="semi-round"
           cssStyle={css`
-            min-width: 80px;
             color: ${color.gray05};
             border-color: ${color.gray05};
             align-self: end;

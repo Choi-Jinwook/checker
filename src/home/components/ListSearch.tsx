@@ -62,11 +62,8 @@ const SearchInput = styled(ControlledInput)`
 `
 
 const ListContainer = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
   width: calc(100vw - 8px);
-  height: calc(44vh - 8px);
+  height: calc(41.5vh - 8px);
   padding: 4px;
   overflow-y: scroll;
   &::-webkit-scrollbar {
@@ -74,10 +71,11 @@ const ListContainer = styled.section`
   }
 `
 
-const StoreName = styled.span`
+const StoreName = styled.div`
   width: auto;
-  min-height: 2rem;
+  min-height: 3rem;
   font-size: 1.5rem;
+  align-self: center;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
