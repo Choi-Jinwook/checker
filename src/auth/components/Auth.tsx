@@ -17,6 +17,11 @@ const Auth = () => {
   const { push } = useRouter()
   const { showToast } = useToast()
 
+  const validateEmail = (email: string) => {
+    const pattern = /^[A-Za-z0-9_\\.\\-]+@[A-Za-z0-9\\-]+\.[A-za-z0-9\\-]+/
+    return pattern.test(email)
+  }
+
   const toggleLogin2Signup = () => {
     setLogin((prev) => !prev)
     setError('')
@@ -43,7 +48,9 @@ const Auth = () => {
     } catch (error: any) {
       const message = error.message
       if (error) {
-        if (message.includes('email-already-in-use')) {
+        if (!validateEmail(email)) {
+          setError('올바른 이메일 형식이 아닙니다.')
+        } else if (message.includes('email-already-in-use')) {
           setError('이미 존재하는 이메일입니다.')
         } else if (
           message.includes('wrong-password') ||
@@ -53,6 +60,7 @@ const Auth = () => {
         } else {
           setError('예상치 못한 에러 발생')
         }
+        return
       }
     }
   }
