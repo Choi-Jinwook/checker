@@ -17,7 +17,6 @@ export const fetchStoreData = async () => {
           doc._document.createTime.timestamp.nanoseconds / 1000000
       })
     })
-    console.log('data fetched')
 
     dataArray.sort((a, b) => b.combinedTimestamp - a.combinedTimestamp)
     return dataArray

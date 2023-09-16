@@ -38,4 +38,5 @@ const StartButton = styled(Button)`
   color: ${color.black};
   border-color: ${color.white};
   font-weight: 400;
+  min-width: 80px;
 `

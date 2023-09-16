@@ -10,6 +10,7 @@ import styled from '@emotion/styled'
 import { color } from '@shared/constants'
 import { Button, ControlledInput, ControlledForm } from '@shared/components'
 import { FormContentProps } from '@shared/types'
+import { css } from '@emotion/react'
 
 const Auth = () => {
   const [login, setLogin] = useState(true)
@@ -77,7 +78,14 @@ const Auth = () => {
               placeholder="Password"
               onChange={handlePassword}
             />
-            <Button kind="primary" shape="semi-round" onClick={onSubmit}>
+            <Button
+              cssStyle={css`
+                min-width: 80px;
+              `}
+              kind="primary"
+              shape="semi-round"
+              onClick={onSubmit}
+            >
               {login ? '로그인' : '회원가입'}
             </Button>
           </>

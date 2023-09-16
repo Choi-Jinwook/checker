@@ -1,5 +1,12 @@
+import { JWT } from 'next-auth/jwt'
 import NextAuth from 'next-auth/next'
 import GoogleProvider from 'next-auth/providers/google'
+
+interface JWTProps {
+  token: JWT
+  account: any
+  user: any
+}
 
 const options = {
   providers: [
@@ -17,6 +24,17 @@ const options = {
     },
     async session({ session, user, token }: any) {
       return session
+    },
+    async jwt({ token, account, user }: JWTProps) {
+      if (account && user) {
+        return {
+          accessToken: account.access_token,
+          accessTokenExpires: account.expires_at,
+          refreshToken: account.refresh_token,
+          user
+        }
+      }
+      return token
     }
   }
 }

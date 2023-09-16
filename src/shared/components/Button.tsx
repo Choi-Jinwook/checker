@@ -57,6 +57,7 @@ export default Button
 const SButton = styled.button<SButtonProps>`
   font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
+  max-width: 356px;
   border: 1px solid #0800ff;
   cursor: pointer;
   display: inline-block;
